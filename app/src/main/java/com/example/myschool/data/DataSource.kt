@@ -13,7 +13,7 @@ object DataSource {
         1 to listOf(
             Subject(id = "eng1", name = "English", icon = "📖", progress = 75),
             Subject(id = "math1", name = "Mathematics", icon = "🧮", progress = 50),
-            Subject(id = "sci1", name = "Basic Science", icon = "🔬", progress = 60)
+            Subject(id = "sci1", name = "Physics", icon = "🔬", progress = 60)
         ),
         2 to listOf(
             Subject(id = "eng2", name = "English", icon = "📖", progress = 80),
@@ -23,7 +23,7 @@ object DataSource {
         3 to listOf(
             Subject(id = "eng3", name = "English", icon = "📖", progress = 85),
             Subject(id = "math3", name = "Mathematics", icon = "📐", progress = 70),
-            Subject(id = "sci3", name = "Integrated Science", icon = "🧪", progress = 75)
+            Subject(id = "sci3", name = "Chemistry", icon = "🧪", progress = 75)
         ),
         4 to listOf(
             Subject(id = "eng4", name = "English", icon = "📖", progress = 90),
