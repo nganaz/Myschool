@@ -55,7 +55,11 @@ fun AppFooter(navController: NavHostController) {
             colors = itemColors,
             icon = { Icon(Icons.Filled.Book, contentDescription = "Subjects") },
             label = { Text("Subjects") },
-            selected = currentDestination?.hierarchy?.any { it.route == "subjects/{form}" } == true,
+            selected = currentDestination?.hierarchy?.any {
+                it.route == "subjects/{form}" ||
+                it.route?.startsWith("subjectDetails/") == true ||
+                it.route?.startsWith("topic/") == true
+            } == true,
             onClick = {
                 if(selectedForm != null) {
                     navController.navigate("subjects/$selectedForm") {

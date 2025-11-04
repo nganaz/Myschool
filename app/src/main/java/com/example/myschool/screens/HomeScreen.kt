@@ -2,7 +2,6 @@ package com.example.myschool.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -45,6 +44,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.myschool.R
 import com.example.myschool.data.DataSource
+import com.example.myschool.data.Subject
 import com.example.myschool.data.UserDataRepository
 
 // A helper function to safely convert the form string to an integer
@@ -184,9 +184,12 @@ fun HomeScreen(
                     Box(
                         modifier = Modifier
                             .width(180.dp)
-                            .clickable { mainNavController.navigate("enrollment") }
                     ) {
-                        ExploreCard(topic = form)
+                        ExploreCard(
+                            title = form,
+                            subtitle = "Explore other classes",
+                            onClick = { mainNavController.navigate("enrollment") }
+                        )
                     }
                 }
             }

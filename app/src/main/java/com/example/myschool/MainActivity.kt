@@ -26,8 +26,8 @@ import com.example.myschool.data.UserDataRepository
 import com.example.myschool.screens.AccountScreen
 import com.example.myschool.screens.ChatScreen
 import com.example.myschool.screens.EnrollmentScreen
+import com.example.myschool.screens.HomeScreen
 import com.example.myschool.screens.LoginScreen
-import com.example.myschool.screens.MainScreen
 import com.example.myschool.screens.NotificationsScreen
 import com.example.myschool.screens.SubjectDetailsScreen
 import com.example.myschool.screens.SubjectsScreen
@@ -121,7 +121,7 @@ fun AppNavigation() {
                     )
                 }
                 composable("main") {
-                    MainScreen(
+                    HomeScreen(
                         mainNavController = navController
                     )
                 }
