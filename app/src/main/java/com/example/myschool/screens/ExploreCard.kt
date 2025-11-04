@@ -2,41 +2,31 @@ package com.example.myschool.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import com.example.myschool.R
-import com.example.myschool.data.Subject
 
 @Composable
-fun SubjectCard(subject: Subject, onSubjectClick: (Subject) -> Unit) {
+fun ExploreCard(topic: String) {
     Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onSubjectClick(subject) },
+        modifier = Modifier.fillMaxWidth(),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         shape = RoundedCornerShape(12.dp)
     ) {
@@ -45,7 +35,7 @@ fun SubjectCard(subject: Subject, onSubjectClick: (Subject) -> Unit) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(100.dp)
-                    .background(subject.color)
+                    .background(Color(0xFFE91E63)) // Placeholder color
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.ic_launcher_foreground),
@@ -55,16 +45,9 @@ fun SubjectCard(subject: Subject, onSubjectClick: (Subject) -> Unit) {
                 )
             }
             Column(modifier = Modifier.padding(16.dp)) {
-                Text(text = subject.name, style = MaterialTheme.typography.titleMedium)
+                Text(text = topic, style = MaterialTheme.typography.titleMedium)
                 Spacer(modifier = Modifier.height(8.dp))
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    LinearProgressIndicator(
-                        progress = { subject.progress / 100f },
-                        modifier = Modifier.weight(1f)
-                    )
-                    Spacer(modifier = Modifier.size(8.dp))
-                    Text(text = "${subject.progress}%", style = MaterialTheme.typography.bodySmall)
-                }
+                Text(text = "Explore now", style = MaterialTheme.typography.bodyMedium)
             }
         }
     }

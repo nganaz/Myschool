@@ -26,7 +26,7 @@ fun EnrollmentScreen(onFormSelected: (String) -> Unit) {
         verticalArrangement = Arrangement.Center
     ) {
         Text(
-            text = "Select Your Form",
+            text = "Enrol into one of these forms now",
             style = MaterialTheme.typography.headlineMedium
         )
         Spacer(modifier = Modifier.height(32.dp))
