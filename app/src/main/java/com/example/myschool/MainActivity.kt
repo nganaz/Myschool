@@ -32,7 +32,10 @@ import com.example.myschool.screens.NotificationsScreen
 import com.example.myschool.screens.SubjectsScreen
 import com.example.myschool.screens.WelcomeScreen
 import com.example.myschool.screens.subjects.form_1.english.EnglishSubjectScreen
+import com.example.myschool.screens.subjects.form_1.english.grammar.EnglishGrammarScreen
 import com.example.myschool.screens.subjects.form_1.english.grammar.EnglishGrammarTopicContentScreen
+import com.example.myschool.screens.subjects.form_1.english.literature.EnglishLiteratureScreen
+import com.example.myschool.screens.subjects.form_1.english.literature.EnglishLiteratureTopicContentScreen
 import com.example.myschool.ui.theme.MySchoolTheme
 import kotlinx.coroutines.launch
 
@@ -140,8 +143,8 @@ fun AppNavigation() {
                         SubjectsScreen(
                             form = form,
                             onSubjectClick = { subject ->
-                                if (subject.id == "english") {
-                                    navController.navigate("englishSubject")
+                                if (subject.id.startsWith("eng")) {
+                                    navController.navigate("englishSubject/$form")
                                 } else {
                                     // Handle other subjects here
                                 }
@@ -150,11 +153,19 @@ fun AppNavigation() {
                         )
                     }
                 }
-                composable("englishSubject") {
-                    EnglishSubjectScreen(navController = navController)
+                composable(
+                    "englishSubject/{form}",
+                    arguments = listOf(navArgument("form") { type = NavType.StringType })
+                ) { backStackEntry ->
+                    val form = backStackEntry.arguments?.getString("form")
+                    EnglishSubjectScreen(navController = navController, form = form)
                 }
-                composable("englishGrammar") {
-                    com.example.myschool.screens.subjects.form_1.english.grammar.EnglishGrammarScreen(navController = navController)
+                composable(
+                    "englishGrammar/{form}",
+                    arguments = listOf(navArgument("form") { type = NavType.StringType })
+                ) { backStackEntry ->
+                    val form = backStackEntry.arguments?.getString("form")
+                    EnglishGrammarScreen(navController = navController, form = form)
                 }
                 composable(
                     "englishGrammarTopicContent/{topicId}",
@@ -162,6 +173,20 @@ fun AppNavigation() {
                 ) { backStackEntry ->
                     val topicId = backStackEntry.arguments?.getString("topicId")
                     EnglishGrammarTopicContentScreen(navController = navController, topicId = topicId)
+                }
+                composable(
+                    "englishLiterature/{form}",
+                    arguments = listOf(navArgument("form") { type = NavType.StringType })
+                ) { backStackEntry ->
+                    val form = backStackEntry.arguments?.getString("form")
+                    EnglishLiteratureScreen(navController = navController, form = form)
+                }
+                composable(
+                    "englishLiteratureTopicContent/{topicId}",
+                    arguments = listOf(navArgument("topicId") { type = NavType.StringType })
+                ) { backStackEntry ->
+                    val topicId = backStackEntry.arguments?.getString("topicId")
+                    EnglishLiteratureTopicContentScreen(navController = navController, topicId = topicId)
                 }
                 composable("chat") {
                     ChatScreen(navController = navController)

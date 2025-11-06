@@ -1,4 +1,4 @@
-package com.example.myschool.screens.subjects.form_1.english.grammar
+package com.example.myschool.screens.subjects.form_1.english.literature
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -22,7 +22,7 @@ import com.example.myschool.ui.theme.TextPrimaryColor
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EnglishGrammarTopicContentScreen(navController: NavController, topicId: String?) {
+fun EnglishLiteratureTopicContentScreen(navController: NavController, topicId: String?) {
     val topic = findTopicById(topicId)
 
     Scaffold(

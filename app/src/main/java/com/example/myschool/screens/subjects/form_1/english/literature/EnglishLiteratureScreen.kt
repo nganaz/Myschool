@@ -1,4 +1,4 @@
-package com.example.myschool.screens.subjects.form_1.english.grammar
+package com.example.myschool.screens.subjects.form_1.english.literature
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -23,16 +23,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.myschool.data.Topic
-import com.example.myschool.data.getGrammarTopicsForForm
+import com.example.myschool.data.getLiteratureTopicsForForm
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EnglishGrammarScreen(navController: NavController, form: String?) {
-    val topics = getGrammarTopicsForForm(form)
+fun EnglishLiteratureScreen(navController: NavController, form: String?) {
+    val topics = getLiteratureTopicsForForm(form)
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Grammar Topics - $form") },
+                title = { Text("Literature Topics - $form") },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
@@ -51,7 +51,7 @@ fun EnglishGrammarScreen(navController: NavController, form: String?) {
         ) {
             items(topics) { topic ->
                 TopicListItem(topic = topic) {
-                    navController.navigate("englishGrammarTopicContent/${topic.id}")
+                    navController.navigate("englishLiteratureTopicContent/${topic.id}")
                 }
             }
         }

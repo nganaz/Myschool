@@ -134,7 +134,14 @@ fun HomeScreen(
                     Box(modifier = Modifier.width(280.dp)) {
                         SubjectCard(
                             subject = subject,
-                            onSubjectClick = { mainNavController.navigate("subjectDetails/${it.id}") })
+                            onSubjectClick = { clickedSubject ->
+                                if (clickedSubject.id.startsWith("eng")) {
+                                    mainNavController.navigate("englishSubject/$selectedForm")
+                                } else {
+                                    // Handle other subjects here
+                                }
+                            }
+                        )
                     }
                 }
             }

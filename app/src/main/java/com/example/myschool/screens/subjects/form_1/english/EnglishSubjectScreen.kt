@@ -2,7 +2,9 @@ package com.example.myschool.screens.subjects.form_1.english
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -14,11 +16,11 @@ import androidx.navigation.NavController
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EnglishSubjectScreen(navController: NavController) {
+fun EnglishSubjectScreen(navController: NavController, form: String?) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("English") },
+                title = { Text("English - $form") },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
@@ -35,11 +37,24 @@ fun EnglishSubjectScreen(navController: NavController) {
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable { navController.navigate("englishGrammar") },
+                    .clickable { navController.navigate("englishGrammar/$form") },
                 elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
             ) {
                 Text(
                     text = "Grammar",
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.padding(16.dp)
+                )
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { navController.navigate("englishLiterature/$form") },
+                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+            ) {
+                Text(
+                    text = "Literature",
                     style = MaterialTheme.typography.titleMedium,
                     modifier = Modifier.padding(16.dp)
                 )
