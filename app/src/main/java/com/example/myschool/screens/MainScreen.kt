@@ -17,7 +17,7 @@ fun MainScreen(
     Column(modifier = Modifier.padding(16.dp)) {
         ExploreCard(
             title = "Explore Subjects",
-            subtitle = "Find all the subjects offered for your form.",
+            subtitle = "All My Subjects",
             onClick = {
                 if (selectedForm != null) {
                     mainNavController.navigate("subjects/$selectedForm")

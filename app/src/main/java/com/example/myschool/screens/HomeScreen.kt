@@ -16,9 +16,13 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -27,6 +31,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,8 +49,8 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.myschool.R
 import com.example.myschool.data.DataSource
-import com.example.myschool.data.Subject
 import com.example.myschool.data.UserDataRepository
+import kotlinx.coroutines.delay
 
 // A helper function to safely convert the form string to an integer
 private fun getGradeLevelFromForm(form: String?): Int? {
@@ -75,38 +80,13 @@ fun HomeScreen(
     ) {
         item {
             Column(modifier = Modifier.padding(16.dp)) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(110.dp) // Further Reduced height
-                        .clip(RoundedCornerShape(16.dp))
-                        .background(MaterialTheme.colorScheme.primary)
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_launcher_foreground),
-                        contentDescription = "Welcome Image",
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier.fillMaxSize()
-                    )
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(16.dp),
-                        verticalArrangement = Arrangement.Center,
-                    ) {
-                        Text(
-                            text = "Welcome ${selectedForm ?: "MySchool"}",
-                            style = MaterialTheme.typography.headlineMedium,
-                            color = Color.White
-                        )
-                    }
-                }
+                ImageCarouselCard(form = selectedForm)
                 Spacer(modifier = Modifier.height(16.dp))
                 Box(modifier = Modifier.height(50.dp)) {
                     TextField(
                         value = searchText,
                         onValueChange = { searchText = it },
-                        placeholder = { Text("Search for concepts, meaning or topics") },
+                        placeholder = { Text("Search topics") },
                         leadingIcon = { Icon(Icons.Filled.Search, contentDescription = "Search") },
                         modifier = Modifier.fillMaxWidth(),
                         colors = TextFieldDefaults.colors(
@@ -133,7 +113,12 @@ fun HomeScreen(
                     text = "My Subjects",
                     style = MaterialTheme.typography.titleLarge
                 )
-                TextButton(onClick = { mainNavController.navigate("subjects/$selectedForm") }) {
+                TextButton(
+                    onClick = { mainNavController.navigate("subjects/$selectedForm") },
+                    colors = ButtonDefaults.textButtonColors(
+                        containerColor = Color.DarkGray
+                    )
+                ) {
                     Text("See all >")
                 }
             }
@@ -168,7 +153,12 @@ fun HomeScreen(
                     text = "Explore",
                     style = MaterialTheme.typography.titleLarge
                 )
-                TextButton(onClick = { mainNavController.navigate("enrollment") }) {
+                TextButton(
+                    onClick = { mainNavController.navigate("enrollment") },
+                    colors = ButtonDefaults.textButtonColors(
+                        containerColor = Color.DarkGray
+                    )
+                ) {
                     Text("See all >")
                 }
             }
@@ -192,6 +182,56 @@ fun HomeScreen(
                         )
                     }
                 }
+            }
+        }
+    }
+}
+
+@Composable
+fun ImageCarouselCard(form: String?) {
+    val images = listOf(
+        R.drawable.seetop,
+        R.drawable.examroom,
+        R.drawable.books
+    )
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(125.dp),
+        shape = RoundedCornerShape(16.dp)
+    ) {
+        Box(modifier = Modifier.fillMaxSize()) {
+            val pagerState = rememberPagerState(pageCount = { images.size })
+
+            LaunchedEffect(key1 = pagerState) {
+                while (true) {
+                    delay(2000)
+                    val nextPage = (pagerState.currentPage + 1) % pagerState.pageCount
+                    pagerState.animateScrollToPage(nextPage)
+                }
+            }
+
+            HorizontalPager(state = pagerState) {
+                Image(
+                    painter = painterResource(id = images[it]),
+                    contentDescription = "Carousel Image",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
+
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = "Welcome to ${form ?: "MySchool"}",
+                    style = MaterialTheme.typography.headlineMedium,
+                    color = Color.White
+                )
             }
         }
     }

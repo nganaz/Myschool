@@ -29,10 +29,10 @@ import com.example.myschool.screens.EnrollmentScreen
 import com.example.myschool.screens.HomeScreen
 import com.example.myschool.screens.LoginScreen
 import com.example.myschool.screens.NotificationsScreen
-import com.example.myschool.screens.SubjectDetailsScreen
 import com.example.myschool.screens.SubjectsScreen
 import com.example.myschool.screens.WelcomeScreen
-import com.example.myschool.screens.subjects.TopicScreen
+import com.example.myschool.screens.subjects.form_1.english.EnglishSubjectScreen
+import com.example.myschool.screens.subjects.form_1.english.grammar.EnglishGrammarTopicContentScreen
 import com.example.myschool.ui.theme.MySchoolTheme
 import kotlinx.coroutines.launch
 
@@ -57,6 +57,7 @@ fun AppNavigation() {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
+    val showAppHeader = currentRoute == "main"
     val showBottomBar = currentRoute != "welcome" && currentRoute != "login" && currentRoute != "enrollment"
 
     ModalNavigationDrawer(
@@ -88,10 +89,11 @@ fun AppNavigation() {
     ) {
         Scaffold(
             topBar = {
-                AppHeader(
-                    onMenuClick = { scope.launch { drawerState.open() } },
-                    onNotificationsClick = { navController.navigate("notifications") }
-                )
+                if (showAppHeader) {
+                    AppHeader(
+                        onNotificationsClick = { navController.navigate("notifications") }
+                    )
+                }
             },
             bottomBar = {
                 if (showBottomBar) {
@@ -108,7 +110,10 @@ fun AppNavigation() {
                     WelcomeScreen(onGetStartedClicked = { navController.navigate("login") })
                 }
                 composable("login") {
-                    LoginScreen(onLoginSuccess = { navController.navigate("enrollment") })
+                    LoginScreen(
+                        onLoginSuccess = { navController.navigate("enrollment") },
+                        navController = navController
+                    )
                 }
                 composable("enrollment") {
                     EnrollmentScreen(
@@ -117,7 +122,8 @@ fun AppNavigation() {
                             navController.navigate("main") {
                                 popUpTo("welcome") { inclusive = true }
                             }
-                        }
+                        },
+                        navController = navController
                     )
                 }
                 composable("main") {
@@ -134,37 +140,28 @@ fun AppNavigation() {
                         SubjectsScreen(
                             form = form,
                             onSubjectClick = { subject ->
-                                navController.navigate("subjectDetails/${subject.id}")
-                            }
+                                if (subject.id == "english") {
+                                    navController.navigate("englishSubject")
+                                } else {
+                                    // Handle other subjects here
+                                }
+                            },
+                            navController = navController
                         )
                     }
                 }
-                composable(
-                    "subjectDetails/{subjectId}",
-                    arguments = listOf(navArgument("subjectId") { type = NavType.StringType })
-                ) { backStackEntry ->
-                    val subjectId = backStackEntry.arguments?.getString("subjectId")
-                    if (subjectId != null) {
-                        SubjectDetailsScreen(
-                            subjectId = subjectId,
-                            onTopicClick = { topicId ->
-                                navController.navigate("topic/$subjectId/$topicId")
-                            }
-                        )
-                    }
+                composable("englishSubject") {
+                    EnglishSubjectScreen(navController = navController)
+                }
+                composable("englishGrammar") {
+                    com.example.myschool.screens.subjects.form_1.english.grammar.EnglishGrammarScreen(navController = navController)
                 }
                 composable(
-                    "topic/{subjectId}/{topicId}",
-                    arguments = listOf(
-                        navArgument("subjectId") { type = NavType.StringType },
-                        navArgument("topicId") { type = NavType.StringType }
-                    )
+                    "englishGrammarTopicContent/{topicId}",
+                    arguments = listOf(navArgument("topicId") { type = NavType.StringType })
                 ) { backStackEntry ->
-                    val subjectId = backStackEntry.arguments?.getString("subjectId")
                     val topicId = backStackEntry.arguments?.getString("topicId")
-                    if (subjectId != null && topicId != null) {
-                        TopicScreen(subjectId = subjectId, topicId = topicId)
-                    }
+                    EnglishGrammarTopicContentScreen(navController = navController, topicId = topicId)
                 }
                 composable("chat") {
                     ChatScreen(navController = navController)
