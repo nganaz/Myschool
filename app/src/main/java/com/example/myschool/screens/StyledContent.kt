@@ -5,7 +5,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 
@@ -22,31 +21,52 @@ fun StyledContent(text: String, modifier: Modifier = Modifier) {
             when {
                 // Rule for numbered headings (e.g., "1. Noun:")
                 trimmedLine.matches(Regex("^\\d+\\.\\s+.*:")) -> {
-                    withStyle(style = typography.titleMedium.toSpanStyle().copy(fontWeight = FontWeight.Bold)) {
+                    withStyle(style = typography.titleMedium.toSpanStyle().copy(fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)) {
                         append(trimmedLine + "\n")
                     }
                 }
 
                 // Rule for sub-headings (e.g., "Key Themes:")
                 trimmedLine.endsWith(":") && !trimmedLine.matches(Regex("^\\d+\\.\\s+.*")) && !trimmedLine.startsWith("-") -> {
-                    withStyle(style = typography.titleSmall.toSpanStyle().copy(fontWeight = FontWeight.Bold, fontStyle = FontStyle.Italic)) {
+                    withStyle(style = typography.titleSmall.toSpanStyle().copy(fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)) {
                         append(trimmedLine + "\n")
                     }
                 }
 
                 // Rule for bullet points (e.g., "-   Examples: ...")
                 trimmedLine.startsWith("-") -> {
-                    append("  ") // Indent for the bullet point
-                    withStyle(style = typography.bodyLarge.toSpanStyle()) {
-                        append("• " + trimmedLine.removePrefix("-").trim() + "\n")
+                    append("  • ") // Indent for the bullet point
+                    val content = trimmedLine.removePrefix("-").trim()
+                    val parts = content.split(Regex("(\\*.*?\\*)"))
+                    for (part in parts) {
+                        if (part.startsWith("*") && part.endsWith("*")) {
+                            withStyle(style = typography.bodyLarge.toSpanStyle().copy(fontWeight = FontWeight.Bold)) {
+                                append(part.removeSurrounding("*"))
+                            }
+                        } else {
+                            withStyle(style = typography.bodyLarge.toSpanStyle()) {
+                                append(part)
+                            }
+                        }
                     }
+                    append("\n")
                 }
 
                 // Rule for a normal paragraph of text
                 trimmedLine.isNotBlank() -> {
-                    withStyle(style = typography.bodyLarge.toSpanStyle()) {
-                        append(trimmedLine + "\n")
+                    val parts = trimmedLine.split(Regex("(\\*.*?\\*)"))
+                    for (part in parts) {
+                        if (part.startsWith("*") && part.endsWith("*")) {
+                            withStyle(style = typography.bodyLarge.toSpanStyle().copy(fontWeight = FontWeight.Bold)) {
+                                append(part.removeSurrounding("*"))
+                            }
+                        } else {
+                            withStyle(style = typography.bodyLarge.toSpanStyle()) {
+                                append(part)
+                            }
+                        }
                     }
+                    append("\n")
                 }
 
                 // Preserve blank lines for spacing

@@ -7,15 +7,15 @@ val englishGrammarTopics = listOf(
 
         1.  Noun: A name of a person, place, thing, or idea.
             -   Examples: teacher, Zomba, book, knowledge, happiness.
-            -   Types: Common (boy, city), Proper (John, Lilongwe), Abstract (love, freedom), Concrete (desk, chair), Collective (team, family).
+            -   Types: *Common* (boy, city), *Proper* (John, Lilongwe), *Abstract* (love, freedom), *Concrete* (desk, chair), *Collective* (team, family).
 
         2.  Pronoun: A word used in place of a noun to avoid repetition.
             -   Examples: he, she, it, we, they, you, myself, who, which.
-            -   Types: Personal (I, you), Possessive (mine, yours), Reflexive (himself, herself), Relative (who, which), Demonstrative (this, that).
+            -   Types: *Personal* (I, you), *Possessive* (mine, yours), *Reflexive* (himself, herself), *Relative* (who, which), *Demonstrative* (this, that).
 
         3.  Verb: Shows an action or a state of being.
             -   Examples: run, read, is, am, were, seem, become.
-            -   Types: Action (jump, write), Stative (be, seem, love), Transitive (hit, see), Intransitive (arrive, die), Linking (is, feel).
+            -   Types: *Action* (jump, write), *Stative* (be, seem, love), *Transitive* (hit, see), *Intransitive* (arrive, die), *Linking* (is, feel).
 
         4.  Adjective: Describes or modifies a noun or pronoun.
             -   Examples: tall, beautiful, red, intelligent, that, several.
@@ -138,10 +138,10 @@ val englishGrammarTopics = listOf(
                 -   The moon is bright tonight. (A unique entity)
 
         3.  Zero Article (No Article): No article is used in some cases.
-            -   With plural nouns in a general sense: *Cats are good pets.*
-            -   With non-count nouns (mass nouns): *I drink milk every day.*
-            -   With names of most countries, cities, and proper nouns: *She lives in Blantyre. Thoko is a student.*
-            -   With abstract nouns in a general sense: *Knowledge is power.*
+            -   With plural nouns in a general sense: Cats are good pets.
+            -   With non-count nouns (mass nouns): I drink milk every day.
+            -   With names of most countries, cities, and proper nouns: She lives in Blantyre. Thoko is a student.
+            -   With abstract nouns in a general sense: Knowledge is power.
         """.trimIndent())
 )
 
@@ -158,13 +158,13 @@ val englishLiteratureTopicsForm1 = listOf(
 
         Character Analysis:
         - Judge Ajala: The protagonist. He is young, educated, and represents the force of modern justice and integrity. His main struggle is resisting bribery.
-        - Chief Odje: The antagonist. He is a powerful and wealthy traditional ruler who embodies corruption and the abuse of power.
-        - Mr. Agbalowomeri: A businessman who, under the chief's influence, attempts to bribe Judge Ajala to win a case.
+        - *Chief Odje*: The antagonist. He is a powerful and wealthy traditional ruler who embodies corruption and the abuse of power.
+        - *Mr. Agbalowomeri*: A businessman who, under the chief's influence, attempts to bribe Judge Ajala to win a case.
 
         Key Themes:
-        -   Justice and Injustice: The play examines whether true justice can prevail in a corrupt society.
-        -   Corruption vs. Integrity: This is the central theme, embodied by the clash between Chief Odje and Judge Ajala.
-        -   Tradition vs. Modernity: The conflict between the chief's traditional influence and the judge's modern, law-based approach.
+        -   *Justice and Injustice*: The play examines whether true justice can prevail in a corrupt society.
+        -   *Corruption vs. Integrity*: This is the central theme, embodied by the clash between Chief Odje and Judge Ajala.
+        -   *Tradition vs. Modernity*: The conflict between the chief's traditional influence and the judge's modern, law-based approach.
         """.trimIndent()
     ),
     Topic(
@@ -177,9 +177,9 @@ val englishLiteratureTopicsForm1 = listOf(
         Malawian folk tales (nthano) are rich with moral lessons and often feature animal characters with human-like qualities. The clever rabbit (Kalulu) is a frequent protagonist who uses his wit to outsmart larger and more powerful animals like the hyena (Fisi) or the elephant (Njobvu). These stories teach virtues like humility, wisdom, and community, while warning against greed, jealousy, and foolishness.
 
         Features of Nthano:
-        - Moral Lessons: Every story has a clear lesson at the end.
-        - Personification: Animals talk, think, and act like humans.
-        - Repetition and Song: Many stories include repetitive chants or songs that make them memorable.
+        - *Moral Lessons*: Every story has a clear lesson at the end.
+        - *Personification*: Animals talk, think, and act like humans.
+        - *Repetition and Song*: Many stories include repetitive chants or songs that make them memorable.
 
         Example Story: Kalulu and the Elephant
         During a great drought, Njobvu the elephant finds a hidden well but selfishly keeps it secret. The other animals are thirsty. Kalulu the rabbit devises a clever plan. He flatters the elephant and tricks him into a dancing contest, which makes the elephant reveal the location of the well. The story teaches that intelligence and wit can be more powerful than brute strength.
@@ -212,15 +212,15 @@ val englishLiteratureTopicsForm2 = listOf(
         The novel chronicles the life of Okonkwo, a fierce and respected warrior in the Igbo village of Umuofia. The first part of the book details his personal story and the rich cultural and social fabric of his community. The second part depicts the arrival of European missionaries and colonial officials, and the profound, disruptive impact they have on Igbo society. Okonkwo, unable to adapt to the new order, finds himself on a path to a tragic end.
 
         Character Analysis:
-        - Okonkwo: The protagonist, driven by a deep fear of being seen as weak like his father. His rigidity and pride ultimately lead to his downfall.
-        - Nwoye: Okonkwo's son, who is sensitive and questions the traditions of his society. He eventually converts to Christianity, creating a deep rift with his father.
-        - Mr. Brown: The first white missionary in Umuofia. He is patient, respectful, and willing to understand Igbo beliefs, which allows him to gain converts.
-        - Reverend Smith: Mr. Brown's successor. He is zealous, uncompromising, and intolerant of Igbo customs, which leads to direct conflict.
+        - *Okonkwo*: The protagonist, driven by a deep fear of being seen as weak like his father. His rigidity and pride ultimately lead to his downfall.
+        - *Nwoye*: Okonkwo's son, who is sensitive and questions the traditions of his society. He eventually converts to Christianity, creating a deep rift with his father.
+        - *Mr. Brown*: The first white missionary in Umuofia. He is patient, respectful, and willing to understand Igbo beliefs, which allows him to gain converts.
+        - *Reverend Smith*: Mr. Brown's successor. He is zealous, uncompromising, and intolerant of Igbo customs, which leads to direct conflict.
 
         Key Themes:
-        -   Tradition vs. Change: The clash between the ancient Igbo way of life and the arrival of European colonialism and religion.
-        -   Masculinity: Okonkwo's life is dominated by his narrow and destructive definition of what it means to be a man.
-        -   Fate vs. Free Will: The novel explores the Igbo concept of 'chi' (a personal god) and whether a man's destiny is in his own hands.
+        -   *Tradition vs. Change*: The clash between the ancient Igbo way of life and the arrival of European colonialism and religion.
+        -   *Masculinity*: Okonkwo's life is dominated by his narrow and destructive definition of what it means to be a man.
+        -   *Fate vs. Free Will*: The novel explores the Igbo concept of 'chi' (a personal god) and whether a man's destiny is in his own hands.
         """.trimIndent()
     ),
     Topic(
@@ -233,14 +233,14 @@ val englishLiteratureTopicsForm2 = listOf(
         The play is set in the Yoruba village of Ilujinle. It tells the story of Sidi, the beautiful village belle (the "Jewel"), who is courted by two different men: Lakunle, a modern and arrogant schoolteacher who wants to "civilize" her, and Baroka, the elderly but cunning village chief (the "Lion"). The play is a comedic and satirical exploration of the conflict between traditional Yoruba culture and Western modernity.
 
         Character Analysis:
-        - Sidi: The Jewel. She is beautiful but also vain and easily flattered. She is caught between the allure of modern fame and traditional power.
-        - Baroka: The Lion. He is the cunning and powerful chief of the village. He represents tradition but is not opposed to using modern tricks to get what he wants.
-        - Lakunle: The schoolteacher. He represents a naive and unthinking embrace of Western culture, despising everything traditional.
+        - *Sidi*: The Jewel. She is beautiful but also vain and easily flattered. She is caught between the allure of modern fame and traditional power.
+        - *Baroka*: The Lion. He is the cunning and powerful chief of the village. He represents tradition but is not opposed to using modern tricks to get what he wants.
+        - *Lakunle*: The schoolteacher. He represents a naive and unthinking embrace of Western culture, despising everything traditional.
 
         Key Themes:
-        -   Modernity vs. Tradition: The central theme, represented by the love triangle between Sidi, Baroka, and Lakunle.
-        -   The Role of Women: The play explores female agency and how women navigate patriarchal power structures.
-        -   Cunning and Deception: Baroka's victory is achieved through a clever and deceptive trick, questioning the nature of power.
+        -   *Modernity vs. Tradition*: The central theme, represented by the love triangle between Sidi, Baroka, and Lakunle.
+        -   *The Role of Women*: The play explores female agency and how women navigate patriarchal power structures.
+        -   *Cunning and Deception*: Baroka's victory is achieved through a clever and deceptive trick, questioning the nature of power.
         """.trimIndent()
     )
 )
@@ -257,97 +257,24 @@ val englishLiteratureTopicsForm3 = listOf(
         The story follows a young boy named Njoroge, who wants to pursue education as a path to a better future. However, his dreams are caught in the midst of the growing resistance against white colonial rule. His family is torn apart by the conflict: his father, Ngotho, works for a white settler, Mr. Howlands, on land that was once owned by their ancestors, while his brother, Boro, joins the freedom fighters in the forest. Njoroge finds himself trapped between his desire for peace and education and the violent struggle for independence that engulfs his people.
 
         Key Themes:
-        -   The Power of Education: Njoroge sees education as a source of hope and a way to bridge the gap between his people and the colonizers.
-        -   Land and Dispossession: The loss of ancestral land is a central grievance that fuels the rebellion.
-        -   Betrayal and Loyalty: Characters are forced to make difficult choices about their loyalties—to family, to their people, or to the colonial government.
-        -   Loss of Innocence: The story is a powerful coming-of-age tale where Njoroge’s youthful idealism is shattered by the brutal realities of the conflict.
-        """.trimIndent()
-    ),
-    Topic(
-        id = "play_the_island",
-        name = "Play: The Island",
-        content = """
-        A powerful anti-apartheid play by South African writers Athol Fugard, John Kani, and Winston Ntshona.
-
-        Synopsis:
-        The play is set in an unnamed prison, clearly based on South Africa's infamous Robben Island, where Nelson Mandela was held. It focuses on two cellmates, John and Winston, who are political prisoners. They spend their days performing meaningless, back-breaking labor. To survive the monotony and brutality, they rehearse a two-man version of the Greek tragedy "Antigone" to perform for the other prisoners. As they prepare, the themes of the ancient play—civil disobedience and defiance against an unjust state—begin to merge with their own reality, leading to a powerful and moving climax.
-
-        Key Themes:
-        -   Resistance and Defiance: The act of performing the play is an act of defiance against the dehumanizing prison system.
-        -   Dignity and Identity: The prisoners struggle to hold on to their sense of self in the face of oppression.
-        -   Justice and Law: The play questions the legitimacy of apartheid law, contrasting it with a higher, moral justice, much like Antigone defied King Creon.
-        """.trimIndent()
-    ),
-    Topic(
-        id = "poetry_african_thunderstorm",
-        name = "Poetry: An African Thunderstorm",
-        content = """
-        A famous poem by Malawian diplomat and poet David Rubadiri.
-
-        Overview:
-        The poem vividly describes the arrival of a powerful storm. It begins with the wind stirring up dust and chaos, and follows the storm as it builds in intensity, with clouds gathering and the eventual release of rain. On a literal level, it's a beautiful depiction of a natural event.
-
-        Deeper Meaning:
-        Metaphorically, the poem is often interpreted as an allegory for the arrival of colonialism in Africa. The 'wind' represents the first signs of European influence, which grows into a chaotic and disruptive 'storm' that unsettles traditional life. The poem captures the tension and uncertainty that this impending change brings.
-
-        Literary Devices:
-        -   Personification: The clouds are described as 'gathering to a head' like an angry mob.
-        -   Simile: The wind is compared to a 'plague of locusts.'
-        -   Vivid Imagery: The poem is full of powerful images that appeal to the senses—the 'prancing, whining wind,' the 'tattered flags,' and the 'pelting march of the storm.'
+        -   *The Power of Education*: Njoroge sees education as a source of hope and a way to bridge the gap between his people and the colonizers.
+        -   *Land and Dispossession*: The loss of ancestral land is a central grievance that fuels the rebellion.
+        -   *Betrayal and Loyalty*: Characters are forced to make difficult choices about their loyalties to family, community, and country.
         """.trimIndent()
     )
 )
 
 // --- FORM 4 LITERATURE TOPICS ---
-val englishLiteratureTopicsForm4 = listOf(
-    Topic(
-        id = "novel_animal_farm",
-        name = "Novel: Animal Farm",
-        content = """
-        George Orwell's "Animal Farm" is a powerful allegorical novella reflecting on the events leading up to the Russian Revolution of 1917 and the subsequent Stalinist era of the Soviet Union.
+val englishLiteratureTopicsForm4 = emptyList<Topic>()
 
-        Synopsis:
-        The story is set on a farm where the animals, tired of their human master, Mr. Jones, successfully rebel and take over. They establish a new society based on the principles of "Animalism," with the core belief that "All animals are equal." However, the pigs, being the most intelligent animals, gradually seize control. Led by the cunning and ruthless Napoleon, they corrupt the original ideals, creating a dictatorship that is even more oppressive than their former human master's.
-
-        Character Allegory:
-        - Napoleon: The pig who leads the rebellion. He represents Joseph Stalin.
-        - Snowball: The pig who challenges Napoleon for control. He represents Leon Trotsky.
-        - Boxer: The loyal and hard-working horse, whose motto is "I will work harder." He represents the dedicated but tricked working class.
-        - Squealer: The pig who serves as Napoleon's propagandist, skilled at twisting the truth. He represents the propaganda machine of a totalitarian state.
-
-        Key Themes:
-        -   The Corruption of Power: The central theme, showing how revolutionary ideals can be betrayed by those who seize power.
-        -   Propaganda and Deception: The novella is a masterclass in how language can be manipulated to control the masses.
-        -   Apathy and Ignorance: The other animals' inability to question the pigs' authority allows the dictatorship to flourish.
-        """.trimIndent()
-    ),
-    Topic(
-        id = "play_dedan_kimathi",
-        name = "Play: The Trial of Dedan Kimathi",
-        content = """
-        This play, by Ngũgĩ wa Thiong'o and Micere Githae Mugo, is a powerful and politically charged work that re-imagines the trial of the real-life Kenyan freedom fighter, Dedan Kimathi.
-
-        Synopsis:
-        Instead of a straightforward historical account, the play presents a highly symbolic trial where Kimathi is urged by various forces (businessmen, politicians, religious leaders) to plead guilty and collaborate with the colonial system. He staunchly refuses, and through a series of flashbacks and revolutionary scenes, the play celebrates his unwavering commitment to armed struggle for a truly independent and just Kenya. The play challenges the official colonial narrative and portrays Kimathi as a heroic and visionary leader.
-
-        Key Themes:
-        -   Redefining History: The play is a work of postcolonial resistance, aiming to reclaim African history from a colonial perspective.
-        -   True vs. False Freedom: It critiques a "flag independence" where a black elite simply replaces the white colonizers without fundamentally changing the oppressive system.
-        -   The Role of the Masses: The play emphasizes that the struggle for liberation is a collective effort of peasants and workers, not just great individuals.
-        """.trimIndent()
-    )
-)
-
-// --- DATA ACCESSOR FUNCTIONS ---
+fun findTopicById(topicId: String?): Topic? {
+    return (englishGrammarTopics + englishLiteratureTopicsForm1 + englishLiteratureTopicsForm2 + englishLiteratureTopicsForm3 + englishLiteratureTopicsForm4).find { it.id == topicId }
+}
 
 fun getGrammarTopicsForForm(form: String?): List<Topic> {
-    return when (form) {
-        "Form 1" -> englishGrammarTopics
-        "Form 2" -> englishGrammarTopics
-        "Form 3" -> englishGrammarTopics
-        "Form 4" -> englishGrammarTopics // Grammar is the same for now
-        else -> emptyList()
-    }
+    // For now, returning all grammar topics for any form.
+    // This can be updated to return form-specific topics in the future.
+    return englishGrammarTopics
 }
 
 fun getLiteratureTopicsForForm(form: String?): List<Topic> {
@@ -358,10 +285,4 @@ fun getLiteratureTopicsForForm(form: String?): List<Topic> {
         "Form 4" -> englishLiteratureTopicsForm4
         else -> emptyList()
     }
-}
-
-fun findTopicById(topicId: String?): Topic? {
-    if (topicId == null) return null
-    val allTopics = englishGrammarTopics + englishLiteratureTopicsForm1 + englishLiteratureTopicsForm2 + englishLiteratureTopicsForm3 + englishLiteratureTopicsForm4
-    return allTopics.find { it.id == topicId }
 }
