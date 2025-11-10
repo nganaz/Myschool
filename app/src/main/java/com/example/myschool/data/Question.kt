@@ -2,7 +2,6 @@ package com.example.myschool.data
 
 data class Question(
     val id: Int,
-    val tags: List<String>,
     val subject: String,
     val question: String,
     val author: String,

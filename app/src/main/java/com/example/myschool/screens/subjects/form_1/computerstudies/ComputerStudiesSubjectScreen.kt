@@ -1,4 +1,4 @@
-package com.example.myschool.screens.subjects.form_1.english.literature
+package com.example.myschool.screens.subjects.form_1.computerstudies
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -26,25 +26,22 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.myschool.data.Topic
-import com.example.myschool.data.getLiteratureTopicsForForm
+import com.example.myschool.data.getComputerStudiesTopicsForForm
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EnglishLiteratureScreen(navController: NavController, form: String?) {
-    val topics = getLiteratureTopicsForForm(form)
+fun ComputerStudiesSubjectScreen(navController: NavController, form: String?) {
+    val topics = getComputerStudiesTopicsForForm(form)
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             TopAppBar(
-                title = { Text("Literature Topics - $form") },
+                title = { Text("Computer Studies - $form") },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back"
-                        )
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
                 },
                 scrollBehavior = scrollBehavior
@@ -58,7 +55,7 @@ fun EnglishLiteratureScreen(navController: NavController, form: String?) {
         ) {
             items(topics) { topic ->
                 TopicListItem(topic = topic) {
-                    navController.navigate("englishLiteratureTopicContent/${topic.id}")
+                    navController.navigate("computerStudiesTopicContent/${topic.id}")
                 }
             }
         }

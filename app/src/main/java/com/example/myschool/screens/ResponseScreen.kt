@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,7 +19,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.Button
@@ -32,6 +32,8 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -40,6 +42,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -54,7 +57,10 @@ import com.example.myschool.data.ResponseData
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ResponseScreen(navController: NavController, question: Question) {
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
+
     Scaffold(
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             TopAppBar(
                 title = { Text("Response") },
@@ -63,24 +69,31 @@ fun ResponseScreen(navController: NavController, question: Question) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Back")
                     }
                 },
-                actions = {
-                    IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.Default.Close, contentDescription = "Close")
-                    }
-                }
+                scrollBehavior = scrollBehavior
             )
         }
-    ) {
+    ) { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(it)
-                .padding(16.dp)
+                .padding(padding)
         ) {
-            QuestionDetails(question = question)
-            Spacer(modifier = Modifier.height(16.dp))
-            ResponsesList(responses = ResponseData.responses.filter { it.questionId == question.id })
-            Spacer(modifier = Modifier.weight(1f))
+            val responses = ResponseData.responses.filter { it.questionId == question.id }
+            LazyColumn(
+                modifier = Modifier.weight(1f),
+                contentPadding = PaddingValues(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                item {
+                    QuestionDetails(question = question)
+                }
+                item {
+                    Text("${responses.size} Response${if (responses.size != 1) "s" else ""}", fontWeight = FontWeight.Bold)
+                }
+                items(responses) { response ->
+                    ResponseItem(response = response)
+                }
+            }
             ResponseInput()
         }
     }
@@ -99,11 +112,6 @@ fun QuestionDetails(question: Question) {
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    question.tags.forEach { tag ->
-                        Text(tag, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
-                    }
-                }
                 Text(
                     text = question.subject,
                     color = MaterialTheme.colorScheme.onPrimary,
@@ -147,18 +155,6 @@ fun QuestionDetails(question: Question) {
 }
 
 @Composable
-fun ResponsesList(responses: List<Response>) {
-    LazyColumn(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-        item {
-            Text("${responses.size} Response${if (responses.size != 1) "s" else ""}", fontWeight = FontWeight.Bold)
-        }
-        items(responses) { response ->
-            ResponseItem(response = response)
-        }
-    }
-}
-
-@Composable
 fun ResponseItem(response: Response) {
     Row(modifier = Modifier.fillMaxWidth()) {
         Image(
@@ -195,11 +191,13 @@ fun ResponseItem(response: Response) {
 @Composable
 fun ResponseInput() {
     var text by remember { mutableStateOf("") }
-    Column {
+    Column(
+        modifier = Modifier.padding(16.dp)
+    ) {
         OutlinedTextField(
             value = text,
             onValueChange = { text = it },
-            label = { Text("White your response") },
+            label = { Text("Write your response") },
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(16.dp)
         )

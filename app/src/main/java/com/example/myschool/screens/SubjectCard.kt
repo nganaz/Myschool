@@ -4,7 +4,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -21,10 +20,9 @@ import androidx.compose.ui.unit.dp
 import com.example.myschool.data.Subject
 
 @Composable
-fun SubjectCard(subject: Subject, onSubjectClick: (Subject) -> Unit) {
+fun SubjectCard(subject: Subject, onSubjectClick: (Subject) -> Unit, modifier: Modifier = Modifier) {
     Card(
-        modifier = Modifier
-            .fillMaxWidth()
+        modifier = modifier
             .clickable { onSubjectClick(subject) },
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         shape = RoundedCornerShape(12.dp)

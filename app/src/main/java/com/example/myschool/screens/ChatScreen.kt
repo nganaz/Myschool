@@ -70,7 +70,7 @@ fun ChatScreen(navController: NavController) {
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { /* TODO: Add new question */ },
+                onClick = { navController.navigate("new_question") },
             ) {
                 Icon(Icons.Default.Add, contentDescription = "Add new question")
             }
@@ -109,11 +109,6 @@ fun QuestionItem(question: Question, onItemClick: () -> Unit) {
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    question.tags.forEach { tag ->
-                        Text(tag, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
-                    }
-                }
                 Text(
                     text = question.subject,
                     color = MaterialTheme.colorScheme.onPrimary,

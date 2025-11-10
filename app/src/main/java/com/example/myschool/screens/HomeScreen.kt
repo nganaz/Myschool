@@ -130,19 +130,22 @@ fun HomeScreen(
                 contentPadding = PaddingValues(horizontal = 16.dp),
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                items(subjects.take(3)) { subject ->
-                    Box(modifier = Modifier.width(280.dp)) {
-                        SubjectCard(
-                            subject = subject,
-                            onSubjectClick = { clickedSubject ->
-                                if (clickedSubject.id.startsWith("eng")) {
-                                    mainNavController.navigate("englishSubject/$selectedForm")
-                                } else {
-                                    // Handle other subjects here
-                                }
+                items(subjects) { subject ->
+                    SubjectCard(
+                        subject = subject,
+                        onSubjectClick = { clickedSubject ->
+                            val route = when {
+                                clickedSubject.id.startsWith("eng") -> "englishSubject/$selectedForm"
+                                clickedSubject.id.startsWith("cs") -> "computerStudiesSubject/$selectedForm"
+                                clickedSubject.id.startsWith("math") -> "mathematicsSubject/$selectedForm"
+                                else -> ""
                             }
-                        )
-                    }
+                            if (route.isNotEmpty()) {
+                                mainNavController.navigate(route)
+                            }
+                        },
+                        modifier = Modifier.width(280.dp)
+                    )
                 }
             }
         }

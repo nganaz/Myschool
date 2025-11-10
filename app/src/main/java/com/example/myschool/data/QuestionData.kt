@@ -4,7 +4,6 @@ object QuestionData {
     val questions = listOf(
         Question(
             id = 1,
-            tags = listOf("#Homework", "#Math"),
             subject = "Mathematics",
             question = "What is the formula for the area of a circle?",
             author = "John Doe",
@@ -15,8 +14,7 @@ object QuestionData {
         ),
         Question(
             id = 2,
-            tags = listOf("#Exam", "#Science"),
-            subject = "Science",
+            subject = "Physics",
             question = "What are the states of matter?",
             author = "Jane Smith",
             authorImageUrl = "", // Add a placeholder image url
@@ -26,7 +24,6 @@ object QuestionData {
         ),
         Question(
             id = 3,
-            tags = listOf("#Project", "#History"),
             subject = "History",
             question = "Who was the first president of the United States?",
             author = "Peter Jones",
