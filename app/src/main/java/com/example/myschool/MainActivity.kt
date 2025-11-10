@@ -22,6 +22,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.myschool.data.QuestionData
 import com.example.myschool.data.UserDataRepository
 import com.example.myschool.screens.AccountScreen
 import com.example.myschool.screens.ChatScreen
@@ -29,6 +30,7 @@ import com.example.myschool.screens.EnrollmentScreen
 import com.example.myschool.screens.HomeScreen
 import com.example.myschool.screens.LoginScreen
 import com.example.myschool.screens.NotificationsScreen
+import com.example.myschool.screens.ResponseScreen
 import com.example.myschool.screens.SubjectsScreen
 import com.example.myschool.screens.WelcomeScreen
 import com.example.myschool.screens.subjects.form_1.english.EnglishSubjectScreen
@@ -196,6 +198,16 @@ fun AppNavigation() {
                 }
                 composable("notifications") {
                     NotificationsScreen(navController = navController)
+                }
+                composable(
+                    "response/{questionId}",
+                    arguments = listOf(navArgument("questionId") { type = NavType.IntType })
+                ) { backStackEntry ->
+                    val questionId = backStackEntry.arguments?.getInt("questionId")
+                    val question = QuestionData.questions.find { it.id == questionId }
+                    if (question != null) {
+                        ResponseScreen(navController = navController, question = question)
+                    }
                 }
             }
         }
