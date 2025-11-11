@@ -14,6 +14,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.myschool.data.findTopicById
@@ -24,8 +25,10 @@ import com.example.myschool.ui.theme.TextPrimaryColor
 @Composable
 fun EnglishGrammarTopicContentScreen(navController: NavController, topicId: String?) {
     val topic = findTopicById(topicId)
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
     Scaffold(
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             TopAppBar(
                 title = { Text(text = topic?.name ?: "Topic Content") },
@@ -33,7 +36,8 @@ fun EnglishGrammarTopicContentScreen(navController: NavController, topicId: Stri
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
-                }
+                },
+                scrollBehavior = scrollBehavior
             )
         }
     ) { paddingValues ->

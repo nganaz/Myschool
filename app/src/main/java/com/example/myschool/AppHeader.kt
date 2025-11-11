@@ -1,6 +1,5 @@
 package com.example.myschool
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -33,7 +32,9 @@ import com.example.myschool.ui.theme.MySchoolTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppHeader(
-    onNotificationsClick: () -> Unit
+    onNotificationsClick: () -> Unit,
+    onHelpClick: () -> Unit,
+    onAboutClick: () -> Unit
 ) {
     var menuExpanded by remember { mutableStateOf(false) }
     val context = LocalContext.current
@@ -77,14 +78,14 @@ fun AppHeader(
                     DropdownMenuItem(
                         text = { Text("Help") },
                         onClick = {
-                            Toast.makeText(context, "Help clicked", Toast.LENGTH_SHORT).show()
+                            onHelpClick()
                             menuExpanded = false
                         }
                     )
                     DropdownMenuItem(
                         text = { Text("About") },
                         onClick = {
-                            Toast.makeText(context, "About clicked", Toast.LENGTH_SHORT).show()
+                            onAboutClick()
                             menuExpanded = false
                         }
                     )
@@ -98,6 +99,6 @@ fun AppHeader(
 @Composable
 fun AppHeaderPreview() {
     MySchoolTheme {
-        AppHeader(onNotificationsClick = {})
+        AppHeader(onNotificationsClick = {}, onHelpClick = {}, onAboutClick = {})
     }
 }

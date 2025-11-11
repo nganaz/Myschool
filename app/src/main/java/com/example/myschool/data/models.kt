@@ -23,6 +23,5 @@ data class Subject(
     val name: String,
     val icon: String, // We'll use this for an icon later
     val progress: Int, // A value from 0 to 100
-    val color: Color,
-    val topics: List<Topic> = emptyList() // Add topics to the subject
+    val color: Color
 )

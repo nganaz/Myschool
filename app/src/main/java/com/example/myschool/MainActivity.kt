@@ -28,12 +28,19 @@ import com.example.myschool.screens.AccountScreen
 import com.example.myschool.screens.ChatScreen
 import com.example.myschool.screens.EnrollmentScreen
 import com.example.myschool.screens.HomeScreen
+import com.example.myschool.screens.InfoScreen
 import com.example.myschool.screens.LoginScreen
 import com.example.myschool.screens.NewQuestionScreen
-import com.example.myschool.screens.NotificationsScreen
+import com.example.myschool.screens.NotificationScreen
 import com.example.myschool.screens.ResponseScreen
 import com.example.myschool.screens.SubjectsScreen
 import com.example.myschool.screens.WelcomeScreen
+import com.example.myschool.screens.subjects.form_1.agriculture.AgricultureSubjectScreen
+import com.example.myschool.screens.subjects.form_1.agriculture.AgricultureTopicContentScreen
+import com.example.myschool.screens.subjects.form_1.biology.BiologySubjectScreen
+import com.example.myschool.screens.subjects.form_1.biology.BiologyTopicContentScreen
+import com.example.myschool.screens.subjects.form_1.chemistry.ChemistrySubjectScreen
+import com.example.myschool.screens.subjects.form_1.chemistry.ChemistryTopicContentScreen
 import com.example.myschool.screens.subjects.form_1.computerstudies.ComputerStudiesSubjectScreen
 import com.example.myschool.screens.subjects.form_1.computerstudies.ComputerStudiesTopicContentScreen
 import com.example.myschool.screens.subjects.form_1.english.EnglishSubjectScreen
@@ -41,8 +48,14 @@ import com.example.myschool.screens.subjects.form_1.english.grammar.EnglishGramm
 import com.example.myschool.screens.subjects.form_1.english.grammar.EnglishGrammarTopicContentScreen
 import com.example.myschool.screens.subjects.form_1.english.literature.EnglishLiteratureScreen
 import com.example.myschool.screens.subjects.form_1.english.literature.EnglishLiteratureTopicContentScreen
+import com.example.myschool.screens.subjects.form_1.history.HistorySubjectScreen
+import com.example.myschool.screens.subjects.form_1.history.HistoryTopicContentScreen
 import com.example.myschool.screens.subjects.form_1.mathematics.MathematicsSubjectScreen
 import com.example.myschool.screens.subjects.form_1.mathematics.MathematicsTopicContentScreen
+import com.example.myschool.screens.subjects.form_1.physics.PhysicsSubjectScreen
+import com.example.myschool.screens.subjects.form_1.physics.PhysicsTopicContentScreen
+import com.example.myschool.screens.subjects.form_1.socialstudies.SocialStudiesSubjectScreen
+import com.example.myschool.screens.subjects.form_1.socialstudies.SocialStudiesTopicContentScreen
 import com.example.myschool.ui.theme.MySchoolTheme
 import kotlinx.coroutines.launch
 
@@ -68,20 +81,10 @@ fun AppNavigation() {
     val currentRoute = navBackStackEntry?.destination?.route
 
     val showAppHeader = currentRoute == "main"
-    val showBottomBar = currentRoute != "welcome" &&
-        currentRoute != "login" &&
-        currentRoute != "enrollment" &&
-        currentRoute?.startsWith("response") != true &&
-        currentRoute != "new_question" &&
-        currentRoute?.startsWith("englishSubject") != true &&
-        currentRoute?.startsWith("englishGrammar") != true &&
-        currentRoute?.startsWith("englishGrammarTopicContent") != true &&
-        currentRoute?.startsWith("englishLiterature") != true &&
-        currentRoute?.startsWith("englishLiteratureTopicContent") != true &&
-        currentRoute?.startsWith("computerStudiesSubject") != true &&
-        currentRoute?.startsWith("computerStudiesTopicContent") != true &&
-        currentRoute?.startsWith("mathematicsSubject") != true &&
-        currentRoute?.startsWith("mathematicsTopicContent") != true
+    val showBottomBar = currentRoute == "main" ||
+        currentRoute == "subjects/{form}" ||
+        currentRoute == "chat" ||
+        currentRoute == "account"
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -114,7 +117,9 @@ fun AppNavigation() {
             topBar = {
                 if (showAppHeader) {
                     AppHeader(
-                        onNotificationsClick = { navController.navigate("notifications") }
+                        onNotificationsClick = { navController.navigate("notifications") },
+                        onHelpClick = { navController.navigate("info/Help") },
+                        onAboutClick = { navController.navigate("info/About") }
                     )
                 }
             },
@@ -167,6 +172,12 @@ fun AppNavigation() {
                                     subject.id.startsWith("eng") -> "englishSubject/$form"
                                     subject.id.startsWith("cs") -> "computerStudiesSubject/$form"
                                     subject.id.startsWith("math") -> "mathematicsSubject/$form"
+                                    subject.id.startsWith("phy") -> "physicsSubject/$form"
+                                    subject.id.startsWith("ss") -> "socialStudiesSubject/$form"
+                                    subject.id.startsWith("hist") -> "historySubject/$form"
+                                    subject.id.startsWith("bio") -> "biologySubject/$form"
+                                    subject.id.startsWith("chem") -> "chemistrySubject/$form"
+                                    subject.id.startsWith("agric") -> "agricultureSubject/$form"
                                     else -> ""
                                 }
                                 if (route.isNotEmpty()) {
@@ -199,6 +210,48 @@ fun AppNavigation() {
                     MathematicsSubjectScreen(navController = navController, form = form)
                 }
                 composable(
+                    "physicsSubject/{form}",
+                    arguments = listOf(navArgument("form") { type = NavType.StringType })
+                ) { backStackEntry ->
+                    val form = backStackEntry.arguments?.getString("form")
+                    PhysicsSubjectScreen(navController = navController, form = form)
+                }
+                composable(
+                    "socialStudiesSubject/{form}",
+                    arguments = listOf(navArgument("form") { type = NavType.StringType })
+                ) { backStackEntry ->
+                    val form = backStackEntry.arguments?.getString("form")
+                    SocialStudiesSubjectScreen(navController = navController, form = form)
+                }
+                composable(
+                    "historySubject/{form}",
+                    arguments = listOf(navArgument("form") { type = NavType.StringType })
+                ) { backStackEntry ->
+                    val form = backStackEntry.arguments?.getString("form")
+                    HistorySubjectScreen(navController = navController, form = form)
+                }
+                composable(
+                    "biologySubject/{form}",
+                    arguments = listOf(navArgument("form") { type = NavType.StringType })
+                ) { backStackEntry ->
+                    val form = backStackEntry.arguments?.getString("form")
+                    BiologySubjectScreen(navController = navController, form = form)
+                }
+                composable(
+                    "chemistrySubject/{form}",
+                    arguments = listOf(navArgument("form") { type = NavType.StringType })
+                ) { backStackEntry ->
+                    val form = backStackEntry.arguments?.getString("form")
+                    ChemistrySubjectScreen(navController = navController, form = form)
+                }
+                composable(
+                    "agricultureSubject/{form}",
+                    arguments = listOf(navArgument("form") { type = NavType.StringType })
+                ) { backStackEntry ->
+                    val form = backStackEntry.arguments?.getString("form")
+                    AgricultureSubjectScreen(navController = navController, form = form)
+                }
+                composable(
                     "computerStudiesTopicContent/{topicId}",
                     arguments = listOf(navArgument("topicId") { type = NavType.StringType })
                 ) { backStackEntry ->
@@ -211,6 +264,48 @@ fun AppNavigation() {
                 ) { backStackEntry ->
                     val topicId = backStackEntry.arguments?.getString("topicId")
                     MathematicsTopicContentScreen(navController = navController, topicId = topicId)
+                }
+                composable(
+                    "physicsTopicContent/{topicId}",
+                    arguments = listOf(navArgument("topicId") { type = NavType.StringType })
+                ) { backStackEntry ->
+                    val topicId = backStackEntry.arguments?.getString("topicId")
+                    PhysicsTopicContentScreen(navController = navController, topicId = topicId)
+                }
+                composable(
+                    "historyTopicContent/{topicId}",
+                    arguments = listOf(navArgument("topicId") { type = NavType.StringType })
+                ) { backStackEntry ->
+                    val topicId = backStackEntry.arguments?.getString("topicId")
+                    HistoryTopicContentScreen(navController = navController, topicId = topicId)
+                }
+                composable(
+                    "chemistryTopicContent/{topicId}",
+                    arguments = listOf(navArgument("topicId") { type = NavType.StringType })
+                ) { backStackEntry ->
+                    val topicId = backStackEntry.arguments?.getString("topicId")
+                    ChemistryTopicContentScreen(navController = navController, topicId = topicId)
+                }
+                composable(
+                    "agricultureTopicContent/{topicId}",
+                    arguments = listOf(navArgument("topicId") { type = NavType.StringType })
+                ) { backStackEntry ->
+                    val topicId = backStackEntry.arguments?.getString("topicId")
+                    AgricultureTopicContentScreen(navController = navController, topicId = topicId)
+                }
+                composable(
+                    "socialStudiesTopicContent/{topicId}",
+                    arguments = listOf(navArgument("topicId") { type = NavType.StringType })
+                ) { backStackEntry ->
+                    val topicId = backStackEntry.arguments?.getString("topicId")
+                    SocialStudiesTopicContentScreen(navController = navController, topicId = topicId)
+                }
+                composable(
+                    "biologyTopicContent/{topicId}",
+                    arguments = listOf(navArgument("topicId") { type = NavType.StringType })
+                ) { backStackEntry ->
+                    val topicId = backStackEntry.arguments?.getString("topicId")
+                    BiologyTopicContentScreen(navController = navController, topicId = topicId)
                 }
                 composable(
                     "englishGrammar/{form}",
@@ -247,7 +342,7 @@ fun AppNavigation() {
                     AccountScreen(navController = navController)
                 }
                 composable("notifications") {
-                    NotificationsScreen(navController = navController)
+                    NotificationScreen(navController = navController)
                 }
                 composable(
                     "response/{questionId}",
@@ -261,6 +356,13 @@ fun AppNavigation() {
                 }
                 composable("new_question") {
                     NewQuestionScreen(navController = navController)
+                }
+                composable(
+                    "info/{infoType}",
+                    arguments = listOf(navArgument("infoType") { type = NavType.StringType })
+                ) { backStackEntry ->
+                    val infoType = backStackEntry.arguments?.getString("infoType")
+                    InfoScreen(navController = navController, infoType = infoType)
                 }
             }
         }

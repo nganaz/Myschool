@@ -130,7 +130,7 @@ fun HomeScreen(
                 contentPadding = PaddingValues(horizontal = 16.dp),
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                items(subjects) { subject ->
+                items(subjects.take(3)) { subject ->
                     SubjectCard(
                         subject = subject,
                         onSubjectClick = { clickedSubject ->
@@ -138,6 +138,12 @@ fun HomeScreen(
                                 clickedSubject.id.startsWith("eng") -> "englishSubject/$selectedForm"
                                 clickedSubject.id.startsWith("cs") -> "computerStudiesSubject/$selectedForm"
                                 clickedSubject.id.startsWith("math") -> "mathematicsSubject/$selectedForm"
+                                clickedSubject.id.startsWith("phy") -> "physicsSubject/$selectedForm"
+                                clickedSubject.id.startsWith("ss") -> "socialStudiesSubject/$selectedForm"
+                                clickedSubject.id.startsWith("hist") -> "historySubject/$selectedForm"
+                                clickedSubject.id.startsWith("bio") -> "biologySubject/$selectedForm"
+                                clickedSubject.id.startsWith("chem") -> "chemistrySubject/$selectedForm"
+                                clickedSubject.id.startsWith("agric") -> "agricultureSubject/$selectedForm"
                                 else -> ""
                             }
                             if (route.isNotEmpty()) {
@@ -200,7 +206,7 @@ fun HomeScreen(
 @Composable
 fun ImageCarouselCard(form: String?) {
     val images = listOf(
-        R.drawable.seetop,
+        R.drawable.bookshelf,
         R.drawable.examroom,
         R.drawable.books
     )
