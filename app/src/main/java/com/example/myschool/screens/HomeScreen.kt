@@ -23,6 +23,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -38,7 +40,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -50,6 +51,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.myschool.R
 import com.example.myschool.data.DataSource
 import com.example.myschool.data.UserDataRepository
+import com.example.myschool.data.searchAllTopics
 import kotlinx.coroutines.delay
 
 // A helper function to safely convert the form string to an integer
@@ -72,6 +74,9 @@ fun HomeScreen(
     var searchText by remember { mutableStateOf(TextFieldValue("")) }
     val allForms = DataSource.getAllForms()
     val otherForms = allForms.filter { it != selectedForm }
+    var expanded by remember { mutableStateOf(false) }
+    val searchResults = if (searchText.text.isNotBlank()) searchAllTopics(searchText.text) else emptyList()
+
 
     LazyColumn(
         modifier = modifier
@@ -82,10 +87,13 @@ fun HomeScreen(
             Column(modifier = Modifier.padding(16.dp)) {
                 ImageCarouselCard(form = selectedForm)
                 Spacer(modifier = Modifier.height(16.dp))
-                Box(modifier = Modifier.height(50.dp)) {
+                Box {
                     TextField(
                         value = searchText,
-                        onValueChange = { searchText = it },
+                        onValueChange = {
+                            searchText = it
+                            expanded = it.text.isNotBlank()
+                        },
                         placeholder = { Text("Search topics") },
                         leadingIcon = { Icon(Icons.Filled.Search, contentDescription = "Search") },
                         modifier = Modifier.fillMaxWidth(),
@@ -95,8 +103,43 @@ fun HomeScreen(
                             unfocusedContainerColor = Color.White,
                             focusedContainerColor = Color.White
                         ),
-                        shape = RoundedCornerShape(8.dp)
+                        shape = RoundedCornerShape(8.dp),
+                        singleLine = true
                     )
+                    DropdownMenu(
+                        expanded = expanded && searchResults.isNotEmpty(),
+                        onDismissRequest = { expanded = false },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        searchResults.take(5).forEach { topic ->
+                            DropdownMenuItem(
+                                text = { Text(topic.name) },
+                                onClick = {
+                                    val route = when {
+                                        topic.id.startsWith("cs") -> "computerStudiesTopicContent/${topic.id}"
+                                        topic.id.startsWith("math") -> "mathematicsTopicContent/${topic.id}"
+                                        topic.id.startsWith("phy") -> "physicsTopicContent/${topic.id}"
+                                        topic.id.startsWith("hist") -> "historyTopicContent/${topic.id}"
+                                        topic.id.startsWith("chem") -> "chemistryTopicContent/${topic.id}"
+                                        topic.id.startsWith("agric") -> "agricultureTopicContent/${topic.id}"
+                                        topic.id.startsWith("ss") -> "socialStudiesTopicContent/${topic.id}"
+                                        topic.id.startsWith("bio") -> "biologyTopicContent/${topic.id}"
+                                        topic.id.startsWith("eng_gram") -> "englishGrammarTopicContent/${topic.id}"
+                                        topic.id.startsWith("play") -> "englishLiteratureTopicContent/${topic.id}"
+                                        topic.id.startsWith("short_stories") -> "englishLiteratureTopicContent/${topic.id}"
+                                        topic.id.startsWith("poetry") -> "englishLiteratureTopicContent/${topic.id}"
+                                        topic.id.startsWith("novel") -> "englishLiteratureTopicContent/${topic.id}"
+                                        else -> ""
+                                    }
+                                    if (route.isNotEmpty()) {
+                                        mainNavController.navigate(route)
+                                    }
+                                    searchText = TextFieldValue("")
+                                    expanded = false
+                                }
+                            )
+                        }
+                    }
                 }
             }
         }

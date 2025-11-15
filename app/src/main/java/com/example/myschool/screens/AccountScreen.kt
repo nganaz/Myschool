@@ -1,7 +1,11 @@
 package com.example.myschool.screens
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -22,16 +26,81 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import com.example.myschool.R
 
 @Composable
-fun AccountScreen(navController: NavController) {
+fun AccountScreen(navController: NavController, onSignOut: () -> Unit) {
+    val accountViewModel: AccountViewModel = viewModel()
+    val uiState by accountViewModel.uiState.collectAsState()
     var notificationsEnabled by remember { mutableStateOf(true) }
     var darkModeEnabled by remember { mutableStateOf(false) }
+    var showEditProfileDialog by remember { mutableStateOf(false) }
+    var newDisplayName by remember { mutableStateOf("") }
+    var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
+
+    val imagePickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent(),
+        onResult = { uri: Uri? ->
+            selectedImageUri = uri
+        }
+    )
+
+    LaunchedEffect(uiState.isSignedOut) {
+        if (uiState.isSignedOut) {
+            onSignOut()
+        }
+    }
+
+    if (showEditProfileDialog) {
+        AlertDialog(
+            onDismissRequest = { showEditProfileDialog = false },
+            title = { Text("Edit Profile") },
+            text = {
+                Column {
+                    OutlinedTextField(
+                        value = newDisplayName,
+                        onValueChange = { newDisplayName = it },
+                        label = { Text("New display name") }
+                    )
+                    Spacer(modifier = Modifier.padding(8.dp))
+                    Button(onClick = { imagePickerLauncher.launch("image/*") }) {
+                        Text("Select Profile Picture")
+                    }
+                    selectedImageUri?.let {
+                        AsyncImage(
+                            model = it,
+                            contentDescription = "Selected profile picture",
+                            modifier = Modifier
+                                .size(100.dp)
+                                .padding(top = 8.dp)
+                        )
+                    }
+                }
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        accountViewModel.updateProfile(newDisplayName, selectedImageUri)
+                        showEditProfileDialog = false
+                    }
+                ) {
+                    Text("Save")
+                }
+            },
+            dismissButton = {
+                Button(onClick = { showEditProfileDialog = false }) {
+                    Text("Cancel")
+                }
+            }
+        )
+    }
 
     Column(modifier = Modifier.padding(16.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -53,27 +122,31 @@ fun AccountScreen(navController: NavController) {
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.padding(bottom = 24.dp)
                 ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_launcher_foreground), // Replace with actual user image
+                    AsyncImage(
+                        model = uiState.photoUrl,
                         contentDescription = "User Avatar",
+                        placeholder = painterResource(id = R.drawable.ic_launcher_foreground),
+                        error = painterResource(id = R.drawable.ic_launcher_foreground),
+                        contentScale = ContentScale.Crop,
                         modifier = Modifier
                             .size(60.dp)
                             .clip(CircleShape)
+                            .clickable { imagePickerLauncher.launch("image/*") }
                     )
                     Spacer(modifier = Modifier.width(16.dp))
                     Column {
                         Text(
-                            text = "John Carter",
+                            text = uiState.displayName ?: "User",
                             style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
                         )
                         Text(
-                            text = "mrblab24@gmail.com",
+                            text = uiState.email ?: "",
                             style = MaterialTheme.typography.bodyMedium,
                             color = Color.Gray
                         )
                     }
                     Spacer(modifier = Modifier.weight(1f))
-                    IconButton(onClick = { /* Handle edit profile */ }) {
+                    IconButton(onClick = { showEditProfileDialog = true }) {
                         Icon(Icons.Default.Edit, contentDescription = "Edit Profile")
                     }
                 }
@@ -148,7 +221,7 @@ fun AccountScreen(navController: NavController) {
                 SettingItem(
                     icon = Icons.Default.Logout,
                     title = "Log Out",
-                    onClick = { /* Handle log out */ }
+                    onClick = { accountViewModel.signOut() }
                 )
             }
         }

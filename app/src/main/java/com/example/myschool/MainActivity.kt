@@ -35,27 +35,27 @@ import com.example.myschool.screens.NotificationScreen
 import com.example.myschool.screens.ResponseScreen
 import com.example.myschool.screens.SubjectsScreen
 import com.example.myschool.screens.WelcomeScreen
-import com.example.myschool.screens.subjects.form_1.agriculture.AgricultureSubjectScreen
-import com.example.myschool.screens.subjects.form_1.agriculture.AgricultureTopicContentScreen
-import com.example.myschool.screens.subjects.form_1.biology.BiologySubjectScreen
-import com.example.myschool.screens.subjects.form_1.biology.BiologyTopicContentScreen
-import com.example.myschool.screens.subjects.form_1.chemistry.ChemistrySubjectScreen
-import com.example.myschool.screens.subjects.form_1.chemistry.ChemistryTopicContentScreen
-import com.example.myschool.screens.subjects.form_1.computerstudies.ComputerStudiesSubjectScreen
-import com.example.myschool.screens.subjects.form_1.computerstudies.ComputerStudiesTopicContentScreen
-import com.example.myschool.screens.subjects.form_1.english.EnglishSubjectScreen
-import com.example.myschool.screens.subjects.form_1.english.grammar.EnglishGrammarScreen
-import com.example.myschool.screens.subjects.form_1.english.grammar.EnglishGrammarTopicContentScreen
-import com.example.myschool.screens.subjects.form_1.english.literature.EnglishLiteratureScreen
-import com.example.myschool.screens.subjects.form_1.english.literature.EnglishLiteratureTopicContentScreen
-import com.example.myschool.screens.subjects.form_1.history.HistorySubjectScreen
-import com.example.myschool.screens.subjects.form_1.history.HistoryTopicContentScreen
-import com.example.myschool.screens.subjects.form_1.mathematics.MathematicsSubjectScreen
-import com.example.myschool.screens.subjects.form_1.mathematics.MathematicsTopicContentScreen
-import com.example.myschool.screens.subjects.form_1.physics.PhysicsSubjectScreen
-import com.example.myschool.screens.subjects.form_1.physics.PhysicsTopicContentScreen
-import com.example.myschool.screens.subjects.form_1.socialstudies.SocialStudiesSubjectScreen
-import com.example.myschool.screens.subjects.form_1.socialstudies.SocialStudiesTopicContentScreen
+import com.example.myschool.screens.subjects.agriculture.AgricultureSubjectScreen
+import com.example.myschool.screens.subjects.agriculture.AgricultureTopicContentScreen
+import com.example.myschool.screens.subjects.biology.BiologySubjectScreen
+import com.example.myschool.screens.subjects.biology.BiologyTopicContentScreen
+import com.example.myschool.screens.subjects.chemistry.ChemistrySubjectScreen
+import com.example.myschool.screens.subjects.chemistry.ChemistryTopicContentScreen
+import com.example.myschool.screens.subjects.computerstudies.ComputerStudiesSubjectScreen
+import com.example.myschool.screens.subjects.computerstudies.ComputerStudiesTopicContentScreen
+import com.example.myschool.screens.subjects.english.EnglishSubjectScreen
+import com.example.myschool.screens.subjects.english.grammar.EnglishGrammarScreen
+import com.example.myschool.screens.subjects.english.grammar.EnglishGrammarTopicContentScreen
+import com.example.myschool.screens.subjects.english.literature.EnglishLiteratureScreen
+import com.example.myschool.screens.subjects.english.literature.EnglishLiteratureTopicContentScreen
+import com.example.myschool.screens.subjects.history.HistorySubjectScreen
+import com.example.myschool.screens.subjects.history.HistoryTopicContentScreen
+import com.example.myschool.screens.subjects.mathematics.MathematicsSubjectScreen
+import com.example.myschool.screens.subjects.mathematics.MathematicsTopicContentScreen
+import com.example.myschool.screens.subjects.physics.PhysicsSubjectScreen
+import com.example.myschool.screens.subjects.physics.PhysicsTopicContentScreen
+import com.example.myschool.screens.subjects.socialstudies.SocialStudiesSubjectScreen
+import com.example.myschool.screens.subjects.socialstudies.SocialStudiesTopicContentScreen
 import com.example.myschool.ui.theme.MySchoolTheme
 import kotlinx.coroutines.launch
 
@@ -63,6 +63,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        UserDataRepository.initialize(this)
         setContent {
             MySchoolTheme {
                 AppNavigation()
@@ -131,15 +132,26 @@ fun AppNavigation() {
         ) { innerPadding ->
             NavHost(
                 navController = navController,
-                startDestination = if (UserDataRepository.hasEnrolled()) "main" else "welcome",
+                startDestination = if (UserDataRepository.hasSeenWelcome()) "login" else "welcome",
                 modifier = Modifier.padding(innerPadding)
             ) {
                 composable("welcome") {
-                    WelcomeScreen(onGetStartedClicked = { navController.navigate("login") })
+                    WelcomeScreen(onGetStartedClicked = {
+                        UserDataRepository.saveWelcomeSeen()
+                        navController.navigate("login")
+                    })
                 }
                 composable("login") {
                     LoginScreen(
-                        onLoginSuccess = { navController.navigate("enrollment") },
+                        onLoginSuccess = { isNewUser ->
+                            if (isNewUser || !UserDataRepository.hasEnrolled()) {
+                                navController.navigate("enrollment")
+                            } else {
+                                navController.navigate("main") {
+                                    popUpTo("login") { inclusive = true }
+                                }
+                            }
+                        },
                         navController = navController
                     )
                 }
@@ -148,7 +160,7 @@ fun AppNavigation() {
                         onFormSelected = {
                             UserDataRepository.saveSelectedForm(it)
                             navController.navigate("main") {
-                                popUpTo("welcome") { inclusive = true }
+                                popUpTo("login") { inclusive = true }
                             }
                         },
                         navController = navController
@@ -339,7 +351,11 @@ fun AppNavigation() {
                     ChatScreen(navController = navController)
                 }
                 composable("account") {
-                    AccountScreen(navController = navController)
+                    AccountScreen(navController = navController, onSignOut = {
+                        navController.navigate("login") {
+                            popUpTo("main") { inclusive = true }
+                        }
+                    })
                 }
                 composable("notifications") {
                     NotificationScreen(navController = navController)

@@ -7,6 +7,7 @@ object UserDataRepository {
 
     private const val PREFS_NAME = "MySchoolPrefs"
     private const val KEY_SELECTED_FORM = "selected_form"
+    private const val KEY_WELCOME_SEEN = "welcome_seen"
 
     private lateinit var sharedPreferences: SharedPreferences
 
@@ -27,6 +28,14 @@ object UserDataRepository {
     fun hasEnrolled(): Boolean {
         // The user has enrolled if a form is saved in our preferences
         return getSelectedForm() != null
+    }
+
+    fun saveWelcomeSeen() {
+        sharedPreferences.edit().putBoolean(KEY_WELCOME_SEEN, true).apply()
+    }
+
+    fun hasSeenWelcome(): Boolean {
+        return sharedPreferences.getBoolean(KEY_WELCOME_SEEN, false)
     }
 
     // Optional: A function to log out and clear the data
