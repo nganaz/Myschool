@@ -61,6 +61,13 @@ fun LoginScreen(
         }
     }
 
+    LaunchedEffect(uiState.passwordResetEmailSent) {
+        if (uiState.passwordResetEmailSent) {
+            Toast.makeText(context, "Password reset email sent", Toast.LENGTH_LONG).show()
+            loginViewModel.resetPasswordResetEmailSent()
+        }
+    }
+
     LaunchedEffect(uiState.googleSignInIntentSender) {
         uiState.googleSignInIntentSender?.let {
             launcher.launch(IntentSenderRequest.Builder(it).build())
@@ -75,7 +82,15 @@ fun LoginScreen(
         IconButton(
             onClick = {
                 if (uiState.isLoginView) {
-                    navController.popBackStack()
+                    if (!navController.popBackStack()) {
+                        navController.navigate("welcome") {
+                            navController.graph.startDestinationRoute?.let { route ->
+                                popUpTo(route) {
+                                    inclusive = true
+                                }
+                            }
+                        }
+                    }
                 } else {
                     loginViewModel.toggleIsLoginView()
                 }
@@ -128,7 +143,7 @@ fun LoginScreen(
                 supportingText = { uiState.passwordError?.let { Text(it) } },
                 modifier = Modifier.fillMaxWidth()
             )
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(16.dp))
             Button(
                 onClick = {
                     if (uiState.isLoginView) {
@@ -145,6 +160,25 @@ fun LoginScreen(
             ) {
                 Text(if (uiState.isLoginView) stringResource(id = R.string.login_button) else stringResource(id = R.string.create_account_button), color = Color.Black)
             }
+
+            if (uiState.isLoginView) {
+                Spacer(modifier = Modifier.height(16.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(text = stringResource(R.string.forgot_password), fontSize = 14.sp)
+                    TextButton(onClick = { loginViewModel.onForgotPasswordClicked() }) {
+                        Text(
+                            text = stringResource(R.string.reset),
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 14.sp
+                        )
+                    }
+                }
+            }
+
             Spacer(modifier = Modifier.height(24.dp))
             Text(if (uiState.isLoginView) stringResource(id = R.string.or_sign_in_with) else stringResource(id = R.string.or_sign_up_with))
             Spacer(modifier = Modifier.height(16.dp))

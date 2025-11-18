@@ -52,6 +52,8 @@ import com.example.myschool.R
 import com.example.myschool.data.DataSource
 import com.example.myschool.data.UserDataRepository
 import com.example.myschool.data.searchAllTopics
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.delay
 
 // A helper function to safely convert the form string to an integer
@@ -253,6 +255,9 @@ fun ImageCarouselCard(form: String?) {
         R.drawable.examroom,
         R.drawable.books
     )
+    val user = Firebase.auth.currentUser
+    val userName = user?.displayName?.split(" ")?.get(0)
+
 
     Card(
         modifier = Modifier
@@ -287,8 +292,8 @@ fun ImageCarouselCard(form: String?) {
                 verticalArrangement = Arrangement.Center
             ) {
                 Text(
-                    text = "Welcome to ${form ?: "MySchool"}",
-                    style = MaterialTheme.typography.headlineMedium,
+                    text = "Hi ${userName?:"student"}, Welcome to ${form ?: "MySchool"}",
+                    style = MaterialTheme.typography.titleMedium,
                     color = Color.White
                 )
             }

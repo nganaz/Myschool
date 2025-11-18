@@ -6,13 +6,14 @@
     <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="create_password">Create Password</string>
-    <string name="login_button">LOGIN</string>
-    <string name="create_account_button">CREATE ACCOUNT</string>
-    <string name="or_sign_in_with">or Sign In with</string>
-    <string name="or_sign_up_with">or Sign Up with</string>
+    <string name="login_button">Login</string>
+    <string name="create_account_button">Create Account</string>
+    <string name="or_sign_in_with">Or sign in with</string>
+    <string name="or_sign_up_with">Or sign up with</string>
     <string name="sign_in_with_google">Sign in with Google</string>
     <string name="sign_up_with_google">Sign up with Google</string>
-    <string name="dont_have_an_account">Don\'t have an account? </string>
-    <string name="already_a_user">Already a User? </string>
-    <string name="default_web_client_id">305659178066-d24e1607sbr1bv39n2lkubdaeh0v0qmm.apps.googleusercontent.com</string>
+    <string name="dont_have_an_account">Don\'t have an account?</string>
+    <string name="already_a_user">Already a user?</string>
+    <string name="forgot_password">Forgot Password? </string>
+    <string name="reset">Reset</string>
 </resources>

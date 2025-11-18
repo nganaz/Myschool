@@ -3,6 +3,7 @@ package com.example.myschool.screens
 import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
+import android.util.Patterns
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.myschool.R
@@ -12,6 +13,7 @@ import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.auth.ktx.userProfileChangeRequest
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -31,7 +33,8 @@ data class LoginScreenState(
     val loginError: String? = null,
     val isLoginSuccess: Boolean = false,
     val isNewUser: Boolean = false,
-    val googleSignInIntentSender: IntentSender? = null
+    val googleSignInIntentSender: IntentSender? = null,
+    val passwordResetEmailSent: Boolean = false
 )
 
 class LoginViewModel : ViewModel() {
@@ -42,19 +45,34 @@ class LoginViewModel : ViewModel() {
     val uiState = _uiState.asStateFlow()
 
     fun onEmailChange(email: String) {
-        _uiState.update { it.copy(email = email, emailError = null) }
+        _uiState.update { it.copy(email = email) }
+        if (_uiState.value.emailError != null) {
+            validateEmail()
+        }
     }
 
     fun onUsernameChange(username: String) {
-        _uiState.update { it.copy(username = username, usernameError = null) }
+        _uiState.update { it.copy(username = username) }
+        if (_uiState.value.usernameError != null) {
+            validateUsername()
+        }
     }
 
     fun onPasswordChange(password: String) {
-        _uiState.update { it.copy(password = password, passwordError = null) }
+        _uiState.update { it.copy(password = password) }
+        if (_uiState.value.passwordError != null) {
+            validatePassword()
+        }
     }
 
     fun toggleIsLoginView() {
-        _uiState.update { it.copy(isLoginView = !it.isLoginView) }
+        _uiState.update { it.copy(
+            isLoginView = !it.isLoginView,
+            emailError = null,
+            usernameError = null,
+            passwordError = null,
+            loginError = null
+        ) }
     }
 
     fun onLoginClicked() {
@@ -76,13 +94,36 @@ class LoginViewModel : ViewModel() {
             viewModelScope.launch {
                 _uiState.update { it.copy(isLoading = true, loginError = null) }
                 try {
-                    auth.createUserWithEmailAndPassword(uiState.value.email, uiState.value.password).await()
+                    val authResult = auth.createUserWithEmailAndPassword(uiState.value.email, uiState.value.password).await()
+                    val user = authResult.user
+                    val profileUpdates = userProfileChangeRequest {
+                        displayName = uiState.value.username
+                    }
+                    user?.updateProfile(profileUpdates)?.await()
                     _uiState.update { it.copy(isLoading = false, isLoginSuccess = true, isNewUser = true) }
                 } catch (e: Exception) {
                     _uiState.update { it.copy(isLoading = false, loginError = e.message) }
                 }
             }
         }
+    }
+
+    fun onForgotPasswordClicked() {
+        if (validateEmail()) {
+            viewModelScope.launch {
+                _uiState.update { it.copy(isLoading = true, loginError = null, passwordResetEmailSent = false) }
+                try {
+                    auth.sendPasswordResetEmail(uiState.value.email).await()
+                    _uiState.update { it.copy(isLoading = false, passwordResetEmailSent = true) }
+                } catch (e: Exception) {
+                    _uiState.update { it.copy(isLoading = false, loginError = e.message) }
+                }
+            }
+        }
+    }
+
+    fun resetPasswordResetEmailSent() {
+        _uiState.update { it.copy(passwordResetEmailSent = false) }
     }
 
     fun onSignInWithGoogleClicked(context: Context) {
@@ -142,25 +183,48 @@ class LoginViewModel : ViewModel() {
         _uiState.update { it.copy(googleSignInIntentSender = null) }
     }
 
-    private fun validateForm(): Boolean {
-        var isValid = true
-        if (!uiState.value.isLoginView && uiState.value.username.isBlank()) {
-            _uiState.update { it.copy(usernameError = "Username cannot be empty") }
-            isValid = false
-        }
-
-        if (uiState.value.email.isBlank()) {
+    private fun validateEmail(): Boolean {
+        val email = _uiState.value.email
+        return if (email.isBlank()) {
             _uiState.update { it.copy(emailError = "Email cannot be empty") }
-            isValid = false
+            false
+        } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            _uiState.update { it.copy(emailError = "Invalid email format") }
+            false
+        } else {
+            _uiState.update { it.copy(emailError = null) }
+            true
         }
+    }
 
-        if (uiState.value.password.isBlank()) {
-            _uiState.update { it.copy(passwordError = "Password cannot be empty") }
-            isValid = false
-        } else if (uiState.value.password.length < 6) {
-            _uiState.update { it.copy(passwordError = "Password must be at least 6 characters") }
-            isValid = false
+    private fun validateUsername(): Boolean {
+        return if (!uiState.value.isLoginView && uiState.value.username.isBlank()) {
+            _uiState.update { it.copy(usernameError = "Username cannot be empty") }
+            false
+        } else {
+            _uiState.update { it.copy(usernameError = null) }
+            true
         }
-        return isValid
+    }
+
+    private fun validatePassword(): Boolean {
+        val password = _uiState.value.password
+        return if (password.isBlank()) {
+            _uiState.update { it.copy(passwordError = "Password cannot be empty") }
+            false
+        } else if (password.length < 6) {
+            _uiState.update { it.copy(passwordError = "Password must be at least 6 characters") }
+            false
+        } else {
+            _uiState.update { it.copy(passwordError = null) }
+            true
+        }
+    }
+
+    private fun validateForm(): Boolean {
+        val isUsernameValid = validateUsername()
+        val isEmailValid = validateEmail()
+        val isPasswordValid = validatePassword()
+        return isUsernameValid && isEmailValid && isPasswordValid
     }
 }
