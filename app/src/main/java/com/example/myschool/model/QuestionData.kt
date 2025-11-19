@@ -1,7 +1,10 @@
-package com.example.myschool.data
+package com.example.myschool.model
+
+import androidx.compose.runtime.mutableStateListOf
+import com.example.myschool.data.Question
 
 object QuestionData {
-    val questions = listOf(
+    val questions = mutableStateListOf(
         Question(
             id = 1,
             subject = "Mathematics",
@@ -36,4 +39,8 @@ object QuestionData {
             description = ""
         )
     )
+
+    fun addQuestion(question: Question) {
+        questions.add(0, question)
+    }
 }

@@ -30,7 +30,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.myschool.data.DataSource
+import com.example.myschool.data.Question
 import com.example.myschool.data.UserDataRepository
+import com.example.myschool.model.QuestionData
+import com.google.firebase.auth.FirebaseAuth
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -56,7 +62,23 @@ fun NewQuestionScreen(navController: NavController) {
         },
         bottomBar = {
             Button(
-                onClick = { /* TODO: Handle submission */ },
+                onClick = {
+                    val user = FirebaseAuth.getInstance().currentUser
+                    val authorName = user?.displayName ?: "Anonymous"
+                    val newQuestion = Question(
+                        id = QuestionData.questions.size + 1,
+                        question = title,
+                        subject = selectedSubject,
+                        author = authorName,
+                        authorImageUrl = "",
+                        date = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date()),
+                        likes = 0,
+                        comments = 0,
+                        description = description
+                    )
+                    QuestionData.addQuestion(newQuestion)
+                    navController.popBackStack()
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp)

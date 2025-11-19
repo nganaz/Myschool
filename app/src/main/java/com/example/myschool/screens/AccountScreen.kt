@@ -3,7 +3,6 @@ package com.example.myschool.screens
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -36,11 +35,15 @@ import coil.compose.AsyncImage
 import com.example.myschool.R
 
 @Composable
-fun AccountScreen(navController: NavController, onSignOut: () -> Unit) {
+fun AccountScreen(
+    navController: NavController,
+    onSignOut: () -> Unit,
+    isDarkMode: Boolean,
+    onToggleDarkMode: () -> Unit
+) {
     val accountViewModel: AccountViewModel = viewModel()
     val uiState by accountViewModel.uiState.collectAsState()
     var notificationsEnabled by remember { mutableStateOf(true) }
-    var darkModeEnabled by remember { mutableStateOf(false) }
     var showEditProfileDialog by remember { mutableStateOf(false) }
     var newDisplayName by remember { mutableStateOf("") }
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
@@ -180,8 +183,8 @@ fun AccountScreen(navController: NavController, onSignOut: () -> Unit) {
                     title = "Dark Mode",
                     trailingContent = {
                         Switch(
-                            checked = darkModeEnabled,
-                            onCheckedChange = { darkModeEnabled = it }
+                            checked = isDarkMode,
+                            onCheckedChange = { onToggleDarkMode() }
                         )
                     }
                 )
@@ -218,11 +221,22 @@ fun AccountScreen(navController: NavController, onSignOut: () -> Unit) {
                 Divider(modifier = Modifier.padding(vertical = 8.dp))
             }
             item {
-                SettingItem(
-                    icon = Icons.Default.Logout,
-                    title = "Log Out",
-                    onClick = { accountViewModel.signOut() }
-                )
+                Button(
+                    onClick = { accountViewModel.signOut() },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.padding(8.dp)
+                    ) {
+                        Icon(Icons.Default.Logout, contentDescription = "Log Out")
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(text = "Log Out")
+                    }
+                }
             }
         }
     }

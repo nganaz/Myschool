@@ -48,7 +48,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.myschool.R
 import com.example.myschool.data.Question
-import com.example.myschool.data.QuestionData
+import com.example.myschool.model.QuestionData
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -106,7 +106,7 @@ fun QuestionItem(question: Question, onItemClick: () -> Unit) {
         Column(modifier = Modifier.padding(16.dp)) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
+                horizontalArrangement = Arrangement.End,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(

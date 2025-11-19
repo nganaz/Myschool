@@ -14,7 +14,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -65,15 +68,19 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         UserDataRepository.initialize(this)
         setContent {
-            MySchoolTheme {
-                AppNavigation()
+            var isDarkMode by remember { mutableStateOf(false) }
+            MySchoolTheme(darkTheme = isDarkMode) {
+                AppNavigation(
+                    isDarkMode = isDarkMode,
+                    onToggleDarkMode = { isDarkMode = !isDarkMode }
+                )
             }
         }
     }
 }
 
 @Composable
-fun AppNavigation() {
+fun AppNavigation(isDarkMode: Boolean, onToggleDarkMode: () -> Unit) {
     val navController = rememberNavController()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -351,11 +358,16 @@ fun AppNavigation() {
                     ChatScreen(navController = navController)
                 }
                 composable("account") {
-                    AccountScreen(navController = navController, onSignOut = {
-                        navController.navigate("login") {
-                            popUpTo("main") { inclusive = true }
-                        }
-                    })
+                    AccountScreen(
+                        navController = navController,
+                        onSignOut = {
+                            navController.navigate("login") {
+                                popUpTo("main") { inclusive = true }
+                            }
+                        },
+                        isDarkMode = isDarkMode,
+                        onToggleDarkMode = onToggleDarkMode
+                    )
                 }
                 composable("notifications") {
                     NotificationScreen(navController = navController)

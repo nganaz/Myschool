@@ -8,5 +8,6 @@ data class Question(
     val authorImageUrl: String,
     val date: String,
     val comments: Int,
-    val likes: Int
+    val likes: Int,
+    val description: String
 )

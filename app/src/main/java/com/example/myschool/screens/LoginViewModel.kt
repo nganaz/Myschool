@@ -14,6 +14,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.auth.ktx.userProfileChangeRequest
+import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -95,17 +96,28 @@ class LoginViewModel : ViewModel() {
                 _uiState.update { it.copy(isLoading = true, loginError = null) }
                 try {
                     val authResult = auth.createUserWithEmailAndPassword(uiState.value.email, uiState.value.password).await()
-                    val user = authResult.user
+                    val user = authResult.user!!
                     val profileUpdates = userProfileChangeRequest {
                         displayName = uiState.value.username
                     }
-                    user?.updateProfile(profileUpdates)?.await()
+                    user.updateProfile(profileUpdates).await()
+                    createNewUserInFirestore(user.uid, user.email!!, uiState.value.username)
                     _uiState.update { it.copy(isLoading = false, isLoginSuccess = true, isNewUser = true) }
                 } catch (e: Exception) {
                     _uiState.update { it.copy(isLoading = false, loginError = e.message) }
                 }
             }
         }
+    }
+
+    private fun createNewUserInFirestore(uid: String, email: String, username: String) {
+        val db = Firebase.firestore
+        val user = hashMapOf(
+            "uid" to uid,
+            "username" to username,
+            "email" to email,
+        )
+        db.collection("users").document(uid).set(user)
     }
 
     fun onForgotPasswordClicked() {
@@ -172,6 +184,10 @@ class LoginViewModel : ViewModel() {
             try {
                 val authResult = auth.signInWithCredential(credential).await()
                 val isNewUser = authResult.additionalUserInfo?.isNewUser ?: false
+                if(isNewUser) {
+                    val user = authResult.user!!
+                    createNewUserInFirestore(user.uid, user.email!!, user.displayName!!)
+                }
                 _uiState.update { it.copy(isLoading = false, isLoginSuccess = true, isNewUser = isNewUser) }
             } catch (e: Exception) {
                 _uiState.update { it.copy(isLoading = false, loginError = e.message) }

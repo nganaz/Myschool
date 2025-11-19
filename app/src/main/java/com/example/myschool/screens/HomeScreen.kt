@@ -2,6 +2,7 @@ package com.example.myschool.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,6 +20,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ButtonDefaults
@@ -42,7 +45,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -78,12 +83,13 @@ fun HomeScreen(
     val otherForms = allForms.filter { it != selectedForm }
     var expanded by remember { mutableStateOf(false) }
     val searchResults = if (searchText.text.isNotBlank()) searchAllTopics(searchText.text) else emptyList()
+    val keyboardController = LocalSoftwareKeyboardController.current
 
 
     LazyColumn(
         modifier = modifier
             .fillMaxSize()
-            .background(Color(0xFFF0F4F8))
+            .background(MaterialTheme.colorScheme.background)
     ) {
         item {
             Column(modifier = Modifier.padding(16.dp)) {
@@ -97,16 +103,31 @@ fun HomeScreen(
                             expanded = it.text.isNotBlank()
                         },
                         placeholder = { Text("Search topics") },
-                        leadingIcon = { Icon(Icons.Filled.Search, contentDescription = "Search") },
+                        trailingIcon = {
+                            Icon(
+                                Icons.Filled.Search,
+                                contentDescription = "Search",
+                                modifier = Modifier.clickable { expanded = true }
+                            )
+                        },
                         modifier = Modifier.fillMaxWidth(),
                         colors = TextFieldDefaults.colors(
                             focusedIndicatorColor = Color.Transparent,
                             unfocusedIndicatorColor = Color.Transparent,
-                            unfocusedContainerColor = Color.White,
-                            focusedContainerColor = Color.White
+                            unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                            focusedContainerColor = MaterialTheme.colorScheme.surface
                         ),
                         shape = RoundedCornerShape(8.dp),
-                        singleLine = true
+                        singleLine = true,
+                        keyboardOptions = KeyboardOptions.Default.copy(
+                            imeAction = ImeAction.Search
+                        ),
+                        keyboardActions = KeyboardActions(
+                            onSearch = {
+                                expanded = true
+                                keyboardController?.hide()
+                            }
+                        )
                     )
                     DropdownMenu(
                         expanded = expanded && searchResults.isNotEmpty(),
@@ -160,9 +181,6 @@ fun HomeScreen(
                 )
                 TextButton(
                     onClick = { mainNavController.navigate("subjects/$selectedForm") },
-                    colors = ButtonDefaults.textButtonColors(
-                        containerColor = Color.DarkGray
-                    )
                 ) {
                     Text("See all >")
                 }
@@ -216,9 +234,6 @@ fun HomeScreen(
                 )
                 TextButton(
                     onClick = { mainNavController.navigate("enrollment") },
-                    colors = ButtonDefaults.textButtonColors(
-                        containerColor = Color.DarkGray
-                    )
                 ) {
                     Text("See all >")
                 }
@@ -294,7 +309,7 @@ fun ImageCarouselCard(form: String?) {
                 Text(
                     text = "Hi ${userName?:"student"}, Welcome to ${form ?: "MySchool"}",
                     style = MaterialTheme.typography.titleMedium,
-                    color = Color.White
+                    color = MaterialTheme.colorScheme.onPrimary
                 )
             }
         }
