@@ -6,7 +6,8 @@ import androidx.compose.ui.graphics.Color
 data class User(
     val id: String,
     val name: String,
-    val gradeLevel: Int
+    val gradeLevel: Int,
+    val profilePictureUrl: String = ""
 )
 
 // Represents a topic within a subject

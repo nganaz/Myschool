@@ -8,6 +8,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.School
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -18,6 +20,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -27,6 +30,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.myschool.screens.viewmodel.NotificationViewModel
 import com.example.myschool.ui.theme.MySchoolTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -34,10 +39,12 @@ import com.example.myschool.ui.theme.MySchoolTheme
 fun AppHeader(
     onNotificationsClick: () -> Unit,
     onHelpClick: () -> Unit,
-    onAboutClick: () -> Unit
+    onAboutClick: () -> Unit,
+    notificationViewModel: NotificationViewModel = viewModel()
 ) {
     var menuExpanded by remember { mutableStateOf(false) }
     val context = LocalContext.current
+    val notificationCount by notificationViewModel.notificationCount.collectAsState()
 
     TopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
@@ -57,10 +64,16 @@ fun AppHeader(
         },
         actions = {
             IconButton(onClick = onNotificationsClick) {
-                Icon(
-                    imageVector = Icons.Filled.Notifications,
-                    contentDescription = "Notification Icon"
-                )
+                BadgedBox(badge = { 
+                    if (notificationCount > 0) {
+                        Badge { Text(notificationCount.toString()) }
+                    }
+                }) {
+                    Icon(
+                        imageVector = Icons.Filled.Notifications,
+                        contentDescription = "Notification Icon"
+                    )
+                }
             }
 
             Box {

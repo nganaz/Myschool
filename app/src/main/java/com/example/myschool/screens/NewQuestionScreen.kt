@@ -28,21 +28,22 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.myschool.data.DataSource
 import com.example.myschool.data.Question
 import com.example.myschool.data.UserDataRepository
-import com.example.myschool.model.QuestionData
-import com.google.firebase.auth.FirebaseAuth
+import com.example.myschool.screens.viewmodel.NewQuestionViewModel
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NewQuestionScreen(navController: NavController) {
+fun NewQuestionScreen(navController: NavController, newQuestionViewModel: NewQuestionViewModel = viewModel()) {
     var title by remember { mutableStateOf("") }
-    var description by remember { mutableStateOf("") }
     var isExpanded by remember { mutableStateOf(false) }
     val userForm = UserDataRepository.getSelectedForm()
     val gradeLevel = userForm?.filter { it.isDigit() }?.toIntOrNull()
@@ -63,21 +64,23 @@ fun NewQuestionScreen(navController: NavController) {
         bottomBar = {
             Button(
                 onClick = {
-                    val user = FirebaseAuth.getInstance().currentUser
+                    val user = Firebase.auth.currentUser
                     val authorName = user?.displayName ?: "Anonymous"
+                    val authorId = user?.uid ?: ""
                     val newQuestion = Question(
-                        id = QuestionData.questions.size + 1,
                         question = title,
                         subject = selectedSubject,
                         author = authorName,
+                        authorId = authorId,
                         authorImageUrl = "",
                         date = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date()),
                         likes = 0,
                         comments = 0,
-                        description = description
+                        description = ""
                     )
-                    QuestionData.addQuestion(newQuestion)
-                    navController.popBackStack()
+                    newQuestionViewModel.addQuestion(newQuestion) {
+                        navController.popBackStack()
+                    }
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -133,15 +136,6 @@ fun NewQuestionScreen(navController: NavController) {
                     }
                 }
             }
-
-            OutlinedTextField(
-                value = description,
-                onValueChange = { description = it },
-                label = { Text("Enter question details") },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(150.dp)
-            )
         }
     }
 }

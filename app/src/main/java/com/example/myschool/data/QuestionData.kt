@@ -1,9 +1,9 @@
 package com.example.myschool.data
 
 object QuestionData {
-    val questions = listOf(
+    val questions = mutableListOf(
         Question(
-            id = 1,
+            id = "1",
             subject = "Mathematics",
             question = "What is the formula for the area of a circle?",
             author = "John Doe",
@@ -14,7 +14,7 @@ object QuestionData {
             description = ""
         ),
         Question(
-            id = 2,
+            id = "2",
             subject = "Physics",
             question = "What are the states of matter?",
             author = "Jane Smith",
@@ -25,7 +25,7 @@ object QuestionData {
             description = ""
         ),
         Question(
-            id = 3,
+            id = "3",
             subject = "History",
             question = "Who was the first president of the United States?",
             author = "Peter Jones",
@@ -36,4 +36,8 @@ object QuestionData {
             description = ""
         )
     )
+
+    fun addQuestion(question: Question) {
+        questions.add(question)
+    }
 }
