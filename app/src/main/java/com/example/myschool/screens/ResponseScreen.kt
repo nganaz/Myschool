@@ -50,13 +50,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.myschool.R
+import coil.compose.rememberAsyncImagePainter
 import com.example.myschool.data.Question
 import com.example.myschool.data.Response
 import com.example.myschool.screens.viewmodel.ResponseViewModel
@@ -122,8 +121,8 @@ fun ResponseScreen(navController: NavController, questionId: String, responseVie
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     item {
-                        QuestionDetails(question = q, onLikeClicked = { 
-                            // TODO: Implement like question in ResponseViewModel
+                        QuestionDetails(question = q, onLikeClicked = {
+                            responseViewModel.likeQuestion(q.id, it)
                         })
                     }
                     item {
@@ -176,40 +175,38 @@ fun QuestionDetails(question: Question, onLikeClicked: (Boolean) -> Unit) {
                     fontSize = 12.sp
                 )
             }
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(question.question, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.height(16.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Image(
-                        painter = painterResource(id = R.drawable.welcomepage), // Replace with actual image
-                        contentDescription = "Author image",
-                        modifier = Modifier
-                            .size(40.dp)
-                            .clip(CircleShape),
-                        contentScale = ContentScale.Crop
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Column {
-                        Text(question.author, fontWeight = FontWeight.Bold)
-                        Text(question.date, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
+            Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.Top) {
+                Image(
+                    painter = rememberAsyncImagePainter(model = question.authorImageUrl),
+                    contentDescription = "Author image",
+                    modifier = Modifier
+                        .size(24.dp)
+                        .clip(CircleShape),
+                    contentScale = ContentScale.Crop
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(question.author, fontWeight = FontWeight.Bold, fontSize = 12.sp)
+                    Text(question.date, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 10.sp)
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(question.question, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        IconButton(onClick = { onLikeClicked(!isLiked) }) {
+                            Icon(
+                                imageVector = if (isLiked) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                                contentDescription = "Likes",
+                                tint = if (isLiked) Color.Red else MaterialTheme.colorScheme.onSurfaceVariant,
+                                modifier = Modifier.size(16.dp)
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(question.likes.toString(), color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
                     }
-                }
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    IconButton(onClick = { onLikeClicked(!isLiked) }) {
-                        Icon(
-                            imageVector = if (isLiked) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                            contentDescription = "Likes", 
-                            tint = if (isLiked) Color.Red else MaterialTheme.colorScheme.onSurfaceVariant, 
-                            modifier = Modifier.size(16.dp)
-                        )
-                    }
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text(question.likes.toString(), color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
                 }
             }
         }
@@ -226,64 +223,72 @@ fun ResponseItem(
     val user = Firebase.auth.currentUser
     val isLiked = response.likedBy.contains(user?.uid)
 
-    Row(modifier = Modifier.fillMaxWidth()) {
-        Image(
-            painter = painterResource(id = R.drawable.welcomepage), // Replace with actual image
-            contentDescription = "Author image",
-            modifier = Modifier
-                .size(40.dp)
-                .clip(CircleShape),
-            contentScale = ContentScale.Crop
-        )
-        Spacer(modifier = Modifier.width(8.dp))
-        Column {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Column {
-                    Text(response.author, fontWeight = FontWeight.Bold)
-                    Text(response.date, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
-                }
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    IconButton(onClick = { 
-                        onLikeClicked(!isLiked)
-                     }) {
-                        Icon(
-                            imageVector = if (isLiked) Icons.Default.Favorite else Icons.Default.FavoriteBorder, 
-                            contentDescription = "Likes", 
-                            tint = if (isLiked) Color.Red else MaterialTheme.colorScheme.onSurfaceVariant, 
-                            modifier = Modifier.size(16.dp)
-                        )
-                    }
-                    Text(response.likes.toString(), color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
-                    Box {
-                        IconButton(onClick = onReplyClicked) {
-                            Icon(Icons.Default.ChatBubbleOutline, contentDescription = "Reply", tint = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.size(16.dp))
-                        }
-                        if (response.replies > 0) {
-                            Text(
-                                text = response.replies.toString(),
-                                color = Color.Green,
-                                fontSize = 10.sp,
-                                fontWeight = FontWeight.Bold,
-                                modifier = Modifier
-                                    .align(Alignment.TopEnd)
-                                    .background(Color.Transparent, CircleShape)
-                                    .padding(2.dp)
-                            )
-                        }
-                    }
-                    if (user?.uid == response.authorId) {
-                        IconButton(onClick = onDeleteClick) {
-                            Icon(Icons.Default.Delete, contentDescription = "Delete response", tint = MaterialTheme.colorScheme.onSurfaceVariant)
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(16.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+    ) {
+        Box {
+            Row(modifier = Modifier.fillMaxWidth().padding(16.dp), verticalAlignment = Alignment.Top) {
+                Image(
+                    painter = rememberAsyncImagePainter(model = response.authorImageUrl),
+                    contentDescription = "Author image",
+                    modifier = Modifier
+                        .size(24.dp)
+                        .clip(CircleShape),
+                    contentScale = ContentScale.Crop
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(response.author, fontWeight = FontWeight.Bold, fontSize = 12.sp)
+                    Text(response.date, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 10.sp)
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(response.response)
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            IconButton(onClick = { onLikeClicked(!isLiked) }) {
+                                Icon(
+                                    imageVector = if (isLiked) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                                    contentDescription = "Likes",
+                                    tint = if (isLiked) Color.Red else MaterialTheme.colorScheme.onSurfaceVariant,
+                                    modifier = Modifier.size(16.dp)
+                                )
+                            }
+                            Text(response.likes.toString(), color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
+                            Spacer(modifier = Modifier.width(16.dp))
+                            Box {
+                                IconButton(onClick = onReplyClicked) {
+                                    Icon(Icons.Default.ChatBubbleOutline, contentDescription = "Reply", tint = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.size(16.dp))
+                                }
+                                if (response.replies > 0) {
+                                    Text(
+                                        text = response.replies.toString(),
+                                        color = Color.Green,
+                                        fontSize = 10.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        modifier = Modifier
+                                            .align(Alignment.TopEnd)
+                                            .background(Color.Transparent, CircleShape)
+                                            .padding(2.dp)
+                                    )
+                                }
+                            }
                         }
                     }
                 }
             }
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(response.response)
+            if (user?.uid == response.authorId) {
+                IconButton(
+                    onClick = onDeleteClick,
+                    modifier = Modifier.align(Alignment.TopEnd).padding(8.dp)
+                ) {
+                    Icon(Icons.Default.Delete, contentDescription = "Delete response", tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                }
+            }
         }
     }
 }
@@ -309,7 +314,7 @@ fun ResponseInput(responseViewModel: ResponseViewModel, questionId: String) {
                     questionId = questionId,
                     author = user?.displayName ?: "Anonymous",
                     authorId = user?.uid ?: "",
-                    authorImageUrl = "",
+                    authorImageUrl = user?.photoUrl.toString(),
                     date = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date()),
                     response = text,
                     likes = 0,

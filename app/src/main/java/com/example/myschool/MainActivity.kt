@@ -61,6 +61,8 @@ import com.example.myschool.screens.subjects.physics.PhysicsTopicContentScreen
 import com.example.myschool.screens.subjects.socialstudies.SocialStudiesSubjectScreen
 import com.example.myschool.screens.subjects.socialstudies.SocialStudiesTopicContentScreen
 import com.example.myschool.ui.theme.MySchoolTheme
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
@@ -85,6 +87,15 @@ fun AppNavigation(isDarkMode: Boolean, onToggleDarkMode: () -> Unit) {
     val navController = rememberNavController()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
+    val user = Firebase.auth.currentUser
+
+    val startDestination = if (user != null) {
+        "main"
+    } else if (UserDataRepository.hasSeenWelcome()) {
+        "login"
+    } else {
+        "welcome"
+    }
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
@@ -140,7 +151,7 @@ fun AppNavigation(isDarkMode: Boolean, onToggleDarkMode: () -> Unit) {
         ) { innerPadding ->
             NavHost(
                 navController = navController,
-                startDestination = if (UserDataRepository.hasSeenWelcome()) "login" else "welcome",
+                startDestination = startDestination,
                 modifier = Modifier.padding(innerPadding)
             ) {
                 composable("welcome") {

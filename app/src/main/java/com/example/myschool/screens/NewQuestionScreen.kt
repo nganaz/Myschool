@@ -72,11 +72,10 @@ fun NewQuestionScreen(navController: NavController, newQuestionViewModel: NewQue
                         subject = selectedSubject,
                         author = authorName,
                         authorId = authorId,
-                        authorImageUrl = "",
+                        authorImageUrl = user?.photoUrl.toString(),
                         date = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date()),
                         likes = 0,
-                        comments = 0,
-                        description = ""
+                        likedBy = emptyList()
                     )
                     newQuestionViewModel.addQuestion(newQuestion) {
                         navController.popBackStack()

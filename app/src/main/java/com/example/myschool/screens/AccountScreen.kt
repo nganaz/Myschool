@@ -1,15 +1,18 @@
 package com.example.myschool.screens
 
 import android.net.Uri
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -26,6 +29,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -45,8 +49,9 @@ fun AccountScreen(
     val uiState by accountViewModel.uiState.collectAsState()
     var notificationsEnabled by remember { mutableStateOf(true) }
     var showEditProfileDialog by remember { mutableStateOf(false) }
-    var newDisplayName by remember { mutableStateOf("") }
+    var newDisplayName by remember(uiState.displayName) { mutableStateOf(uiState.displayName ?: "") }
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
+    val context = LocalContext.current
 
     val imagePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent(),
@@ -61,19 +66,26 @@ fun AccountScreen(
         }
     }
 
+    LaunchedEffect(uiState.error) {
+        uiState.error?.let {
+            Toast.makeText(context, it, Toast.LENGTH_LONG).show()
+        }
+    }
+
     if (showEditProfileDialog) {
         AlertDialog(
-            onDismissRequest = { showEditProfileDialog = false },
+            onDismissRequest = { if (!uiState.isLoading) showEditProfileDialog = false },
             title = { Text("Edit Profile") },
             text = {
-                Column {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     OutlinedTextField(
                         value = newDisplayName,
                         onValueChange = { newDisplayName = it },
-                        label = { Text("New display name") }
+                        label = { Text("New display name") },
+                        enabled = !uiState.isLoading
                     )
                     Spacer(modifier = Modifier.padding(8.dp))
-                    Button(onClick = { imagePickerLauncher.launch("image/*") }) {
+                    Button(onClick = { imagePickerLauncher.launch("image/*") }, enabled = !uiState.isLoading) {
                         Text("Select Profile Picture")
                     }
                     selectedImageUri?.let {
@@ -85,24 +97,38 @@ fun AccountScreen(
                                 .padding(top = 8.dp)
                         )
                     }
+                    if (uiState.isLoading) {
+                        Spacer(modifier = Modifier.height(8.dp))
+                        CircularProgressIndicator()
+                    }
                 }
             },
             confirmButton = {
                 Button(
                     onClick = {
                         accountViewModel.updateProfile(newDisplayName, selectedImageUri)
-                        showEditProfileDialog = false
-                    }
+                    },
+                    enabled = !uiState.isLoading
                 ) {
                     Text("Save")
                 }
             },
             dismissButton = {
-                Button(onClick = { showEditProfileDialog = false }) {
+                Button(
+                    onClick = { showEditProfileDialog = false },
+                    enabled = !uiState.isLoading
+                ) {
                     Text("Cancel")
                 }
             }
         )
+    }
+
+    // Close dialog on successful update
+    LaunchedEffect(uiState.photoUrl, uiState.displayName) {
+        if (!uiState.isLoading && uiState.error == null) {
+            showEditProfileDialog = false
+        }
     }
 
     Column(modifier = Modifier.padding(16.dp)) {
@@ -134,7 +160,6 @@ fun AccountScreen(
                         modifier = Modifier
                             .size(60.dp)
                             .clip(CircleShape)
-                            .clickable { imagePickerLauncher.launch("image/*") }
                     )
                     Spacer(modifier = Modifier.width(16.dp))
                     Column {

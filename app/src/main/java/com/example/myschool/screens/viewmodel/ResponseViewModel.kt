@@ -93,7 +93,20 @@ class ResponseViewModel : ViewModel() {
                 }
         }
     }
-    
+
+    fun likeQuestion(questionId: String, isLiked: Boolean) {
+        val userId = auth.currentUser?.uid ?: return
+        val questionRef = db.collection("questions").document(questionId)
+
+        if (isLiked) {
+            questionRef.update("likedBy", FieldValue.arrayUnion(userId))
+            questionRef.update("likes", FieldValue.increment(1L))
+        } else {
+            questionRef.update("likedBy", FieldValue.arrayRemove(userId))
+            questionRef.update("likes", FieldValue.increment(-1L))
+        }
+    }
+
     fun likeResponse(responseId: String, isLiked: Boolean) {
         val userId = auth.currentUser?.uid ?: return
         val responseRef = db.collection("responses").document(responseId)

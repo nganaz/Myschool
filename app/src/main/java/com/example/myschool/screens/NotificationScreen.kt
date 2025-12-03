@@ -22,7 +22,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.myschool.data.Notification
 import com.example.myschool.screens.viewmodel.NotificationViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -62,7 +61,9 @@ fun NotificationScreen(navController: NavController, notificationViewModel: Noti
                 items(notifications) { notification ->
                     val user = users[notification.userId]
                     if (user != null) {
-                        NotificationCard(notification = notification, user = user)
+                        NotificationCard(notification = notification, user = user) {
+                            notificationViewModel.markNotificationAsRead(notification.id)
+                        }
                     }
                 }
             }

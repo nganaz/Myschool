@@ -51,15 +51,15 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.myschool.R
+import coil.compose.rememberAsyncImagePainter
 import com.example.myschool.data.Question
 import com.example.myschool.screens.viewmodel.ChatViewModel
+import com.example.myschool.ui.theme.generateColor
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
@@ -152,71 +152,115 @@ fun QuestionItem(
         onClick = onItemClick,
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.End,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = question.subject,
-                    color = MaterialTheme.colorScheme.onPrimary,
-                    modifier = Modifier
-                        .background(color = MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(16.dp))
-                        .padding(horizontal = 12.dp, vertical = 4.dp),
-                    fontSize = 12.sp
-                )
-            }
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(question.question, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-            Spacer(modifier = Modifier.height(16.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Image(
-                        painter = painterResource(id = R.drawable.welcomepage), // Replace with actual image
-                        contentDescription = "Author image",
+        Box {
+            Column(modifier = Modifier.padding(16.dp)) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End
+                ) {
+                    Text(
+                        text = question.subject,
+                        color = MaterialTheme.colorScheme.onPrimary,
                         modifier = Modifier
-                            .size(40.dp)
-                            .clip(CircleShape),
-                        contentScale = ContentScale.Crop
+                            .background(color = MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(16.dp))
+                            .padding(horizontal = 12.dp, vertical = 4.dp),
+                        fontSize = 12.sp
                     )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Column {
-                        Text(question.author, fontWeight = FontWeight.Bold)
-                        Text(question.date, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
-                    }
                 }
-                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        IconButton(onClick = onReplyClicked) {
-                            Icon(Icons.Default.ChatBubbleOutline, contentDescription = "Comments", tint = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.size(16.dp))
-                        }
-                        Text(question.comments.toString(), color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
-                    }
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        IconButton(onClick = { 
-                            onLikeClicked(!isLiked)
-                        }) {
-                            Icon(
-                                imageVector = if (isLiked) Icons.Default.Favorite else Icons.Default.FavoriteBorder, 
-                                contentDescription = "Likes", 
-                                tint = if (isLiked) Color.Red else MaterialTheme.colorScheme.onSurfaceVariant, 
-                                modifier = Modifier.size(16.dp)
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.Top) {
+                    if (question.authorImageUrl.isEmpty()) {
+                        Box(
+                            modifier = Modifier
+                                .size(24.dp)
+                                .background(remember(question.author) { generateColor(question.author) }, shape = CircleShape),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = question.author.take(1).uppercase(),
+                                color = Color.White,
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Bold
                             )
                         }
-                        Text(question.likes.toString(), color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
+                    } else {
+                        Image(
+                            painter = rememberAsyncImagePainter(model = question.authorImageUrl),
+                            contentDescription = "Author image",
+                            modifier = Modifier
+                                .size(24.dp)
+                                .clip(CircleShape),
+                            contentScale = ContentScale.Crop
+                        )
                     }
-                    if (user?.uid == question.authorId) {
-                        IconButton(onClick = onDeleteClick) {
-                            Icon(Icons.Default.Delete, contentDescription = "Delete question", tint = MaterialTheme.colorScheme.onSurfaceVariant)
+
+                    Spacer(modifier = Modifier.width(8.dp))
+
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(question.author, fontWeight = FontWeight.Bold, fontSize = 12.sp)
+                        Text(question.date, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 10.sp)
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        Text(question.question, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
+                             Row(verticalAlignment = Alignment.CenterVertically) {
+                                IconButton(onClick = onReplyClicked, modifier = Modifier.size(24.dp)) {
+                                    Icon(
+                                        Icons.Default.ChatBubbleOutline,
+                                        contentDescription = "Comments",
+                                        modifier = Modifier.size(16.dp),
+                                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
+                                }
+                                Text(
+                                    text = question.comments.toString(),
+                                    fontSize = 12.sp,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
+
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                IconButton(onClick = { onLikeClicked(!isLiked) }, modifier = Modifier.size(24.dp)) {
+                                    Icon(
+                                        imageVector = if (isLiked) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                                        contentDescription = "Likes",
+                                        modifier = Modifier.size(16.dp),
+                                        tint = if (isLiked) Color.Red else MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
+                                }
+                                Text(
+                                    text = question.likes.toString(),
+                                    fontSize = 12.sp,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
                         }
                     }
+                }
+            }
+            if (user?.uid == question.authorId) {
+                IconButton(
+                    onClick = onDeleteClick,
+                    modifier = Modifier.align(Alignment.TopEnd)
+                ) {
+                    Icon(
+                        Icons.Default.Delete,
+                        contentDescription = "Delete question",
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
                 }
             }
         }
